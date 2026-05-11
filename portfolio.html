@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏专业 - 个人作品集</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Aurora Gradient 背景 */
+        .aurora-bg {
+            background: linear-gradient(-45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff);
+            background-size: 400% 400%;
+            animation: aurora 15s ease infinite;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        @keyframes aurora {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Glassmorphism 风格 */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-image: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 255, 255, 0.03) 2px,
+                    rgba(255, 255, 255, 0.03) 4px
+                );
+        }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+        }
+
+        .bento-item {
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .bento-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .bento-item.large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        /* Sticky Sidebar */
+        .sticky-sidebar {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+
+        /* Skeleton 加载动画 */
+        .skeleton {
+            background: linear-gradient(
+                90deg,
+                rgba(148, 163, 184, 0.2) 0%,
+                rgba(148, 163, 184, 0.4) 50%,
+                rgba(148, 163, 184, 0.2) 100%
+            );
+            background-size: 200% 100%;
+            animation: skeleton-loading 2s infinite;
+            border-radius: 12px;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #000;
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            z-index: 9999;
+            animation: slide-in 0.3s ease-out;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes slide-in {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.success::before {
+            content: '✓ ';
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .toast.error::before {
+            content: '✕ ';
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .toast.info::before {
+            content: 'ℹ ';
+            color: #3b82f6;
+            font-weight: bold;
+        }
+
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 文字阴影 */
+        .text-glow {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        /* 响应式网格 */
+        @media (max-width: 768px) {
+            .bento-item.large {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Toast Context
+        const ToastContext = React.createContext();
+
+        const ToastProvider = ({ children }) => {
+            const [toasts, setToasts] = useState([]);
+
+            const addToast = (message, type = 'success', duration = 3000) => {
+                const id = Math.random().toString(36).substr(2, 9);
+                setToasts(prev => [...prev, { id, message, type }]);
+
+                if (duration > 0) {
+                    setTimeout(() => {
+                        setToasts(prev => prev.filter(t => t.id !== id));
+                    }, duration);
+                }
+            };
+
+            return (
+                <ToastContext.Provider value={{ toasts, addToast }}>
+                    {children}
+                </ToastContext.Provider>
+            );
+        };
+
+        const useToast = () => React.useContext(ToastContext);
+
+        // Toast 组件
+        const Toast = ({ id, message, type, onRemove }) => {
+            useEffect(() => {
+                const timer = setTimeout(() => onRemove(id), 3000);
+                return () => clearTimeout(timer);
+            }, [id, onRemove]);
+
+            return (
+                <div className={`toast ${type}`} style={{
+                    animation: 'slide-in 0.3s ease-out'
+                }}>
+                    {message}
+                </div>
+            );
+        };
+
+        // Toast Container
+        const ToastContainer = () => {
+            const { toasts, addToast: _ } = useToast();
+            const [removed, setRemoved] = useState(new Set());
+
+            const handleRemove = (id) => {
+                setRemoved(prev => new Set(prev).add(id));
+            };
+
+            return (
+                <div style={{ position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 9999 }}>
+                    {toasts.map(toast => (
+                        !removed.has(toast.id) && (
+                            <Toast 
+                                key={toast.id}
+                                {...toast}
+                                onRemove={handleRemove}
+                            />
+                        )
+                    ))}
+                </div>
+            );
+        };
+
+        // Skeleton Loading 组件
+        const SkeletonCard = () => (
+            <div className="glass bento-item" style={{ padding: '1.5rem', borderRadius: '24px' }}>
+                <div className="skeleton" style={{ height: '20px', marginBottom: '0.75rem' }}></div>
+                <div className="skeleton" style={{ height: '14px', marginBottom: '0.5rem' }}></div>
+                <div className="skeleton" style={{ height: '14px', width: '80%' }}></div>
+            </div>
+        );
+
+        // 项目卡片组件
+        const ProjectCard = ({ title, description, tags, image, isLarge = false, onClick }) => {
+            const { addToast } = useToast();
+
+            const handleClick = () => {
+                addToast(`查看项目: ${title}`, 'success');
+                if (onClick) onClick();
+            };
+
+            return (
+                <div 
+                    className={`glass bento-item ${isLarge ? 'large' : ''}`}
+                    onClick={handleClick}
+                    style={{
+                        padding: '1.5rem',
+                        cursor: 'pointer',
+                        overflow: 'hidden',
+                        position: 'relative'
+                    }}
+                >
+                    {image && (
+                        <div style={{
+                            width: '100%',
+                            height: isLarge ? '250px' : '150px',
+                            background: `linear-gradient(135deg, ${image.color1}, ${image.color2})`,
+                            borderRadius: '16px',
+                            marginBottom: '1rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '2.5rem',
+                            color: '#fff',
+                            fontWeight: 'bold'
+                        }}>
+                            {image.emoji}
+                        </div>
+                    )}
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#1f2937' }}>
+                        {title}
+                    </h3>
+                    <p style={{ fontSize: '0.875rem', color: '#666', marginBottom: '1rem', lineHeight: '1.5' }}>
+                        {description}
+                    </p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                        {tags.map(tag => (
+                            <span
+                                key={tag}
+                                style={{
+                                    display: 'inline-block',
+                                    background: 'rgba(59, 130, 246, 0.1)',
+                                    color: '#3b82f6',
+                                    padding: '0.25rem 0.75rem',
+                                    borderRadius: '12px',
+                                    fontSize: '0.75rem',
+                                    fontWeight: '500'
+                                }}
+                            >
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // 导航菜单项
+        const NavItem = ({ label, icon, onClick, isActive }) => (
+            <button
+                onClick={onClick}
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: isActive ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+                    color: isActive ? '#3b82f6' : '#6b7280',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                    if (!isActive) e.target.style.background = 'rgba(255, 255, 255, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                    if (!isActive) e.target.style.background = 'transparent';
+                }}
+            >
+                <span style={{ fontSize: '1.25rem' }}>{icon}</span>
+                <span>{label}</span>
+            </button>
+        );
+
+        // 主应用
+        const Portfolio = () => {
+            const [activeSection, setActiveSection] = useState('featured');
+            const [isLoading, setIsLoading] = useState(false);
+            const { addToast } = useToast();
+
+            const handleSectionChange = (section) => {
+                setIsLoading(true);
+                setActiveSection(section);
+                setTimeout(() => setIsLoading(false), 1000);
+                addToast(`切换到 ${section}`, 'info');
+            };
+
+            const projects = [
+                {
+                    title: 'Project-Time',
+                    description: 'UE GAS战斗策划+技术实现，完整的战斗系统架构。涉及技能系统、属性系统、效果系统的完整设计与开发。',
+                    tags: ['UE5', 'GAS', '战斗系统', '策划', '技术'],
+                    image: { emoji: '⚔️', color1: '#ff6b6b', color2: '#ee5a6f' },
+                    isLarge: true
+                },
+                {
+                    title: '某天头上长出对话框',
+                    description: 'UE策划技术动画UI全栈实现，完整的对话系统。包括对话树设计、文案策划、UI交互、动画效果。',
+                    tags: ['UE5', '对话系统', '文案', 'UI', '动画'],
+                    image: { emoji: '💬', color1: '#ffd93d', color2: '#ffb347' },
+                    isLarge: true
+                },
+                {
+                    title: 'Eat Your Fish',
+                    description: 'Unity策划技术动画UI全栈实现。展示完整的游戏开发能力从玩法设计到技术实现再到视觉表现。',
+                    tags: ['Unity', '玩法', '技术', '动画', 'UI'],
+                    image: { emoji: '🐠', color1: '#6bcf7f', color2: '#4fc3f7' },
+                    isLarge: true
+                },
+            ];
+
+            const sections = [
+                {
+                    id: 'featured',
+                    label: '精选项目',
+                    icon: '⭐',
+                    content: projects
+                },
+                {
+                    id: 'planning',
+                    label: '策划板块',
+                    icon: '📋',
+                    content: [
+                        {
+                            title: '任务系统设计',
+                            description: '完整的任务管理系统和数据结构设计',
+                            tags: ['任务系统', '数据设计', '关卡设计'],
+                            image: { emoji: '📝', color1: '#6bcf7f', color2: '#4fc3f7' }
+                        },
+                        {
+                            title: '玩法策划文案',
+                            description: '多个游戏项目的核心玩法和文案策划',
+                            tags: ['玩法策划', '文案', '关卡设计'],
+                            image: { emoji: '🎮', color1: '#ffd93d', color2: '#ffb347' }
+                        }
+                    ]
+                },
+                {
+                    id: 'tech',
+                    label: '技术板块',
+                    icon: '💻',
+                    content: [
+                        {
+                            title: '客户端开发',
+                            description: 'C#、C++、蓝图多语言开发经验',
+                            tags: ['C#', 'C++', '蓝图', 'Unity', 'UE5'],
+                            image: { emoji: '⚙️', color1: '#4d96ff', color2: '#3b82f6' }
+                        },
+                        {
+                            title: 'TA & 视觉效果',
+                            description: '渲染、画面效果、UI系统开发',
+                            tags: ['渲染', '粒子效果', 'UI系统', '动画'],
+                            image: { emoji: '✨', color1: '#ff6b6b', color2: '#ee5a6f' }
+                        }
+                    ]
+                },
+                {
+                    id: 'ai',
+                    label: 'AI 应用',
+                    icon: '🤖',
+                    content: [
+                        {
+                            title: 'AI接入项目',
+                            description: '将AI能力整合到游戏项目中的实践',
+                            tags: ['AI', '机器学习', '游戏AI'],
+                            image: { emoji: '🧠', color1: '#6bcf7f', color2: '#4fc3f7' }
+                        }
+                    ]
+                },
+                {
+                    id: 'knowledge',
+                    label: '知识库',
+                    icon: '📚',
+                    content: [
+                        {
+                            title: '游戏开发基础',
+                            description: '游戏引擎原理、系统设计、最佳实践',
+                            tags: ['学习', '基础', '最佳实践'],
+                            image: { emoji: '📖', color1: '#ffd93d', color2: '#ffb347' }
+                        }
+                    ]
+                }
+            ];
+
+            const currentSection = sections.find(s => s.id === activeSection);
+
+            return (
+                <div style={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
+                    <div className="aurora-bg"></div>
+
+                    {/* 左侧导航 */}
+                    <aside style={{
+                        width: '280px',
+                        padding: '2rem 1rem',
+                        borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+                        background: 'rgba(255, 255, 255, 0.3)',
+                        backdropFilter: 'blur(10px)',
+                        position: 'sticky',
+                        top: 0,
+                        height: '100vh',
+                        overflowY: 'auto'
+                    }}>
+                        <div style={{ marginBottom: '2rem' }}>
+                            <h1 style={{
+                                fontSize: '1.75rem',
+                                fontWeight: 'bold',
+                                background: 'linear-gradient(135deg, #ff6b6b, #4d96ff)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                marginBottom: '0.5rem',
+                                textAlign: 'center'
+                            }}>
+                                Portfolio
+                            </h1>
+                            <p style={{
+                                fontSize: '0.875rem',
+                                color: '#666',
+                                textAlign: 'center'
+                            }}>
+                                游戏专业 全栈创意人
+                            </p>
+                        </div>
+
+                        <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            {sections.map(section => (
+                                <NavItem
+                                    key={section.id}
+                                    label={section.label}
+                                    icon={section.icon}
+                                    isActive={activeSection === section.id}
+                                    onClick={() => handleSectionChange(section.id)}
+                                />
+                            ))}
+                        </nav>
+
+                        <div style={{
+                            marginTop: '2rem',
+                            padding: '1rem',
+                            borderRadius: '12px',
+                            background: 'rgba(255, 255, 255, 0.5)',
+                            fontSize: '0.875rem',
+                            color: '#666',
+                            textAlign: 'center',
+                            lineHeight: '1.6'
+                        }}>
+                            <p style={{ marginBottom: '0.75rem' }}>
+                                高复合型人才
+                            </p>
+                            <p style={{ fontSize: '0.75rem', color: '#999' }}>
+                                策划 · 技术 · TA · AI
+                            </p>
+                        </div>
+                    </aside>
+
+                    {/* 主内容区域 */}
+                    <main style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
+                        {/* 头部区域 */}
+                        <header style={{
+                            padding: '3rem 2rem',
+                            textAlign: 'center',
+                            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                            background: 'rgba(255, 255, 255, 0.2)',
+                            backdropFilter: 'blur(10px)'
+                        }}>
+                            <h2 style={{
+                                fontSize: '2.5rem',
+                                fontWeight: 'bold',
+                                color: '#fff',
+                                marginBottom: '0.5rem',
+                                textShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
+                            }}>
+                                {currentSection?.label}
+                            </h2>
+                            <p style={{
+                                fontSize: '1.1rem',
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                maxWidth: '500px',
+                                margin: '0 auto'
+                            }}>
+                                展示我在游戏开发各领域的专业能力
+                            </p>
+                        </header>
+
+                        {/* 内容网格 */}
+                        <section style={{ padding: '2rem' }}>
+                            {isLoading ? (
+                                <div className="bento-grid">
+                                    {[1, 2, 3, 4].map(i => (
+                                        <SkeletonCard key={i} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="bento-grid">
+                                    {currentSection?.content.map((item, idx) => (
+                                        <ProjectCard
+                                            key={idx}
+                                            {...item}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </section>
+
+                        {/* 底部统计 */}
+                        <footer style={{
+                            padding: '2rem',
+                            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            textAlign: 'center',
+                            color: '#666',
+                            marginTop: '2rem'
+                        }}>
+                            <p style={{ marginBottom: '0.5rem' }}>
+                                © 2024 Game Professional Portfolio
+                            </p>
+                            <p style={{ fontSize: '0.875rem' }}>
+                                持续学习，不断进步
+                            </p>
+                        </footer>
+                    </main>
+
+                    {/* Toast 容器 */}
+                    <ToastContainer />
+                </div>
+            );
+        };
+
+        // App 组件
+        const App = () => (
+            <ToastProvider>
+                <Portfolio />
+            </ToastProvider>
+        );
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

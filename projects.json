@@ -1,0 +1,204 @@
+{
+  "profile": {
+    "name": "游戏专业学生",
+    "title": "全栈创意人",
+    "subtitle": "技术策划 | UE 客户端 | Unity 客户端",
+    "bio": "高复合型人才，具备策划、技术、TA 的全面能力",
+    "tags": ["策划", "技术", "TA", "AI"]
+  },
+  "projects": {
+    "featured": [
+      {
+        "id": "project-time",
+        "title": "Project-Time",
+        "description": "UE GAS 战斗策划+技术实现，完整的战斗系统架构。涉及技能系统、属性系统、效果系统的完整设计与开发。",
+        "category": "UE5 战斗系统",
+        "tags": ["UE5", "GAS", "战斗系统", "策划", "技术"],
+        "emoji": "⚔️",
+        "colors": ["#ff6b6b", "#ee5a6f"],
+        "isLarge": true,
+        "details": {
+          "role": "策划 + 技术",
+          "engine": "UE5",
+          "tools": ["Unreal Engine 5", "Visual Studio", "Perforce"],
+          "achievements": [
+            "设计完整的 GAS 战斗系统",
+            "实现技能、属性、效果系统",
+            "优化战斗性能"
+          ],
+          "demoUrl": "https://example.com/project-time",
+          "githubUrl": "https://github.com/your-name/project-time"
+        }
+      },
+      {
+        "id": "dialog-box",
+        "title": "某天头上长出对话框",
+        "description": "UE 策划技术动画UI全栈实现，完整的对话系统。包括对话树设计、文案策划、UI交互、动画效果。",
+        "category": "UE5 对话系统",
+        "tags": ["UE5", "对话系统", "文案", "UI", "动画"],
+        "emoji": "💬",
+        "colors": ["#ffd93d", "#ffb347"],
+        "isLarge": true,
+        "details": {
+          "role": "全栈",
+          "engine": "UE5",
+          "tools": ["Unreal Engine 5", "Dialogue System"],
+          "achievements": [
+            "设计对话树系统",
+            "实现对话 UI 和动画",
+            "完成所有文案策划"
+          ],
+          "demoUrl": "https://example.com/dialog-box",
+          "githubUrl": "https://github.com/your-name/dialog-box"
+        }
+      },
+      {
+        "id": "eat-fish",
+        "title": "Eat Your Fish",
+        "description": "Unity 策划技术动画UI全栈实现。展示完整的游戏开发能力从玩法设计到技术实现再到视觉表现。",
+        "category": "Unity 游戏",
+        "tags": ["Unity", "玩法", "技术", "动画", "UI"],
+        "emoji": "🐠",
+        "colors": ["#6bcf7f", "#4fc3f7"],
+        "isLarge": true,
+        "details": {
+          "role": "全栈",
+          "engine": "Unity",
+          "tools": ["Unity Engine", "Visual Studio"],
+          "achievements": [
+            "完整的游戏玩法设计",
+            "C# 技术实现",
+            "UI 和动画制作"
+          ],
+          "demoUrl": "https://example.com/eat-fish",
+          "githubUrl": "https://github.com/your-name/eat-fish"
+        }
+      }
+    ],
+    "planning": [
+      {
+        "id": "task-system",
+        "title": "任务系统设计",
+        "description": "完整的任务管理系统和数据结构设计",
+        "tags": ["任务系统", "数据设计", "关卡设计"],
+        "emoji": "📝",
+        "colors": ["#6bcf7f", "#4fc3f7"]
+      },
+      {
+        "id": "gameplay-design",
+        "title": "玩法策划文案",
+        "description": "多个游戏项目的核心玩法和文案策划",
+        "tags": ["玩法策划", "文案", "关卡设计"],
+        "emoji": "🎮",
+        "colors": ["#ffd93d", "#ffb347"]
+      }
+    ],
+    "technology": [
+      {
+        "id": "client-dev",
+        "title": "客户端开发",
+        "description": "C#、C++、蓝图多语言开发经验",
+        "tags": ["C#", "C++", "蓝图", "Unity", "UE5"],
+        "emoji": "⚙️",
+        "colors": ["#4d96ff", "#3b82f6"],
+        "skills": [
+          "C++ (UE5)",
+          "C# (Unity)",
+          "蓝图 (Blueprints)",
+          "性能优化",
+          "网络编程"
+        ]
+      },
+      {
+        "id": "visual-effects",
+        "title": "TA & 视觉效果",
+        "description": "渲染、画面效果、UI系统开发",
+        "tags": ["渲染", "粒子效果", "UI系统", "动画"],
+        "emoji": "✨",
+        "colors": ["#ff6b6b", "#ee5a6f"],
+        "skills": [
+          "渲染管线",
+          "粒子系统",
+          "Shader 编程",
+          "UI 系统设计",
+          "动画系统"
+        ]
+      }
+    ],
+    "ai": [
+      {
+        "id": "ai-integration",
+        "title": "AI 接入项目",
+        "description": "将 AI 能力整合到游戏项目中的实践",
+        "tags": ["AI", "机器学习", "游戏AI"],
+        "emoji": "🧠",
+        "colors": ["#6bcf7f", "#4fc3f7"],
+        "skills": ["游戏 AI", "机器学习", "NPC 行为设计"]
+      }
+    ],
+    "knowledge": [
+      {
+        "id": "game-dev-basics",
+        "title": "游戏开发基础",
+        "description": "游戏引擎原理、系统设计、最佳实践",
+        "tags": ["学习", "基础", "最佳实践"],
+        "emoji": "📖",
+        "colors": ["#ffd93d", "#ffb347"],
+        "topics": [
+          "游戏架构设计",
+          "性能优化",
+          "内存管理",
+          "网络同步",
+          "数据持久化"
+        ]
+      }
+    ]
+  },
+  "skills": {
+    "planning": [
+      "任务管理",
+      "玩法策划",
+      "文案策划",
+      "战斗策划",
+      "关卡设计",
+      "系统设计"
+    ],
+    "programming": [
+      "C++ (UE5)",
+      "C# (Unity)",
+      "蓝图 (UE5)",
+      "性能优化",
+      "网络编程"
+    ],
+    "ta": [
+      "渲染",
+      "粒子效果",
+      "Shader 编程",
+      "UI 系统",
+      "动画系统"
+    ],
+    "ai": [
+      "游戏 AI",
+      "机器学习",
+      "NPC 行为"
+    ]
+  },
+  "experience": [
+    {
+      "title": "高复合型人才",
+      "description": "在策划、技术、TA 等多个领域具有深度实践经验",
+      "duration": "持续进阶"
+    },
+    {
+      "title": "强学习能力",
+      "description": "快速掌握新技术、新工具、新领域知识",
+      "duration": "不断学习"
+    }
+  ],
+  "social": {
+    "github": "https://github.com/your-username",
+    "email": "your-email@example.com",
+    "linkedin": "https://linkedin.com/in/your-profile",
+    "portfolio": "https://your-portfolio.com"
+  }
+}
