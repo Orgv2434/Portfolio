@@ -271,22 +271,27 @@ void main(){
     const mouse = { x: 999, y: 999, active: false, down: false };
     let spawnCD = 0;
 
-    renderer.domElement.addEventListener("pointermove", (e: PointerEvent) => {
+    const handlePointerMove = (e: PointerEvent) => {
       const rect = renderer.domElement.getBoundingClientRect();
       mouse.x = ((e.clientX - rect.left) / rect.width - 0.5) * aspect;
       mouse.y = 0.5 - (e.clientY - rect.top) / rect.height;
       mouse.active = true;
-    });
-    renderer.domElement.addEventListener("pointerdown", () => {
+    };
+    const handlePointerDown = () => {
       mouse.down = true;
-    });
-    renderer.domElement.addEventListener("pointerup", () => {
+    };
+    const handlePointerUp = () => {
       mouse.down = false;
-    });
-    renderer.domElement.addEventListener("pointerleave", () => {
+    };
+    const handlePointerLeave = () => {
       mouse.active = false;
       mouse.down = false;
-    });
+    };
+
+    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("pointerup", handlePointerUp);
+    document.addEventListener("pointerleave", handlePointerLeave);
 
     window.addEventListener("resize", () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
@@ -574,6 +579,10 @@ void main(){
     return () => {
       cancelAnimationFrame(animationId);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("pointerup", handlePointerUp);
+      document.removeEventListener("pointerleave", handlePointerLeave);
       container.removeChild(renderer.domElement);
       renderer.dispose();
       bgTexture.dispose();
