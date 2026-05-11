@@ -598,7 +598,7 @@ void main(){
       style={{ 
         background: '#0a0a12',
         zIndex: 0,
-        pointerEvents: 'auto',
+        pointerEvents: 'none',
         cursor: 'default',
         overflow: 'hidden'
       }}

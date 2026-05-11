@@ -201,6 +201,7 @@ function App() {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: showSidebar ? 1 : 0, x: showSidebar ? 0 : -20 }}
         transition={{ duration: 0.3 }}
+        style={{ pointerEvents: showSidebar ? 'auto' : 'none' }}
       >
         <div className="sidebar-header">
           <h1 className="sidebar-title">游戏专业</h1>

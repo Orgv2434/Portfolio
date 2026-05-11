@@ -413,11 +413,6 @@ html {
     position: relative;
     z-index: 3;
     background: transparent;
-    pointer-events: none;
-}
-
-.main > * {
-    pointer-events: auto;
 }
 
 /* 头部 */
