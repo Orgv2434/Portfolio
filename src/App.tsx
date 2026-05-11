@@ -147,6 +147,7 @@ function App() {
   const handleProjectClick = (project: Project) => {
     showToast(`已打开项目: ${project.title}`, 'info')
     setSelectedProject(project)
+    window.scrollTo(0, 0)
   }
 
   const handleBack = () => {

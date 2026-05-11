@@ -26,6 +26,7 @@ export const WaterDroplets = ({
     const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
     renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.domElement.style.pointerEvents = 'none';
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -48,10 +49,10 @@ export const WaterDroplets = ({
       bgCanvas.height = h;
 
       const grd = bgCtx.createLinearGradient(0, 0, w * 0.6, h);
-      grd.addColorStop(0, colors[0]);
-      grd.addColorStop(0.35, colors[1]);
-      grd.addColorStop(0.6, colors[2]);
-      grd.addColorStop(1, colors[3]);
+      grd.addColorStop(0, colors[0] || "#e8dbc8");
+      grd.addColorStop(0.35, colors[1] || "#5b8cdb");
+      grd.addColorStop(0.6, colors[2] || "#2d6fd4");
+      grd.addColorStop(1, colors[3] || "#1a3fa0");
       bgCtx.fillStyle = grd;
       bgCtx.fillRect(0, 0, w, h);
 

@@ -69,7 +69,7 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
   return (
     <motion.div
       ref={containerRef}
-      className="relative w-full h-screen min-h-[600px] overflow-hidden cursor-pointer"
+      className="relative w-full max-w-4xl mx-auto h-[400px] md:h-[500px] overflow-hidden cursor-pointer rounded-2xl shadow-2xl"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
