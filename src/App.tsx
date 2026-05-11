@@ -16,6 +16,7 @@ import {
 import data from '../projects.json'
 import { ProjectDetail } from './pages/ProjectDetail'
 import { WaterDroplets } from './components/WaterDroplets'
+import { SparklingWater } from './components/SparklingWater'
 import { DepthIndicator } from './components/DepthIndicator'
 import { ScrollHint } from './components/ScrollHint'
 import { BentoCard } from './components/BentoCard'
@@ -85,6 +86,20 @@ function App() {
   const [depth, setDepth] = useState(0)
   const [showScrollHint, setShowScrollHint] = useState(true)
   const [showSidebar, setShowSidebar] = useState(false)
+  
+  // 滚动状态管理
+  const [isAtTop, setIsAtTop] = useState(true)           // 是否在顶部
+  const [showSparkling, setShowSparkling] = useState(false)    // 是否显示SparklingWater动效
+  const [isReversed, setIsReversed] = useState(false)          // 动效是否翻转
+  
+  // 上一次滚动位置，用于判断滚动方向
+  const lastScrollY = useCallback(() => {
+    let value = window.scrollY
+    return {
+      get: () => value,
+      set: (newVal: number) => { value = newVal }
+    }
+  }, [])()
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1500)
@@ -97,12 +112,44 @@ function App() {
       const newDepth = scrollY * 3
       setDepth(newDepth)
       
+      // 判断是否在顶部（滚动距离小于50px认为在顶部）
+      const currentAtTop = scrollY < 50
+      const wasAtTop = isAtTop
+      
+      // 判断滚动方向
+      const isScrollingDown = scrollY > lastScrollY.get()
+      const isScrollingUp = scrollY < lastScrollY.get()
+      
+      // 更新上一次滚动位置
+      lastScrollY.set(scrollY)
+      
+      // 更新顶部状态
+      setIsAtTop(currentAtTop)
+      
+      // 滚动提示和侧边栏显示逻辑
       if (newDepth > 100) {
         setShowScrollHint(false)
         setShowSidebar(true)
       } else {
         setShowScrollHint(true)
         setShowSidebar(false)
+      }
+
+      // 转场动效逻辑
+      // 从顶部向下滚动时，触发正常方向的SparklingWater动效
+      if (wasAtTop && !currentAtTop && isScrollingDown) {
+        setIsReversed(false)
+        setShowSparkling(true)
+        // 3秒后自动隐藏动效
+        setTimeout(() => setShowSparkling(false), 3000)
+      }
+      
+      // 滚动回顶部时，触发翻转方向的SparklingWater动效
+      if (!wasAtTop && currentAtTop && isScrollingUp) {
+        setIsReversed(true)
+        setShowSparkling(true)
+        // 3秒后自动隐藏动效
+        setTimeout(() => setShowSparkling(false), 3000)
       }
 
       const sections: SectionType[] = ['home', 'featured', 'planning', 'technology', 'ta', 'ai', 'knowledge']
@@ -121,7 +168,7 @@ function App() {
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isAtTop])
 
   const getCurrentSectionName = useCallback(() => {
     const names: Record<SectionType, string> = {
@@ -166,12 +213,50 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* 水滴效果背景 */}
-      <WaterDroplets 
-        title="Nanako's Profile"
-        subtitle=""
-        colors={["#0a1628", "#0d2137", "#134b6e", "#1a6f9a"]}
+      {/* 简约渐变背景 - 始终显示 */}
+      <div 
+        className="fixed inset-0"
+        style={{
+          background: 'linear-gradient(to bottom, #0a1628 0%, #0d2137 30%, #134b6e 60%, #1a6f9a 100%)',
+          zIndex: -1
+        }}
       />
+      
+      {/* WaterDroplets泡泡背景 - 仅在顶部显示 */}
+      <AnimatePresence>
+        {isAtTop && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <WaterDroplets 
+              title="Nanako's Profile"
+              subtitle=""
+              colors={["#0a1628", "#0d2137", "#134b6e", "#1a6f9a"]}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
+      {/* SparklingWater转场动效 - 滚动触发时显示 */}
+      <AnimatePresence>
+        {showSparkling && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed inset-0 z-50"
+          >
+            <SparklingWater 
+              reversed={isReversed} 
+              visible={showSparkling}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* 深度指示器 */}
       <DepthIndicator depth={depth} currentSection={getCurrentSectionName()} />
