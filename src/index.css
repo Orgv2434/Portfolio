@@ -1,0 +1,470 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Aurora Gradient 背景 */
+.aurora-bg {
+    background: linear-gradient(-45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff);
+    background-size: 400% 400%;
+    animation: aurora 15s ease infinite;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+@keyframes aurora {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Glassmorphism 风格 - 水下主题 */
+.glass {
+    background: rgba(10, 22, 40, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    background-image: 
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 212, 255, 0.02) 2px,
+            rgba(0, 212, 255, 0.02) 4px
+        );
+}
+
+/* Bento Grid */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+}
+
+.bento-item {
+    border-radius: 24px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+}
+
+.bento-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.bento-item.large {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+/* Bento 卡片内容 */
+.bento-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+}
+
+.bento-image-normal {
+    height: 150px;
+    font-size: 2.5rem;
+}
+
+.bento-image-large {
+    height: 250px;
+    font-size: 4rem;
+}
+
+.bento-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.bento-description {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.bento-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.bento-tag {
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 212, 255, 0.15);
+    color: #00d4ff;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+/* Sticky Sidebar */
+.sticky-sidebar {
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+}
+
+/* Skeleton 加载动画 */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(148, 163, 184, 0.2) 0%,
+        rgba(148, 163, 184, 0.4) 50%,
+        rgba(148, 163, 184, 0.2) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 2s infinite;
+    border-radius: 12px;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-card {
+    padding: 1.5rem;
+}
+
+.skeleton-title {
+    height: 20px;
+    margin-bottom: 0.75rem;
+}
+
+.skeleton-text {
+    height: 14px;
+}
+
+/* Hero Section - 全屏欢迎区域 */
+.hero-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.hero-content {
+    text-align: center;
+    z-index: 1;
+}
+
+.hero-title {
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 
+        0 0 20px rgba(0, 212, 255, 0.8),
+        0 0 40px rgba(0, 212, 255, 0.6),
+        0 0 60px rgba(0, 212, 255, 0.4),
+        0 0 80px rgba(0, 212, 255, 0.2);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.hero-scroll-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #000;
+    color: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    z-index: 9999;
+    animation: slide-in 0.3s ease-out;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast.success::before {
+    content: '✓ ';
+    color: #10b981;
+    font-weight: bold;
+}
+
+.toast.error::before {
+    content: '✕ ';
+    color: #ef4444;
+    font-weight: bold;
+}
+
+.toast.info::before {
+    content: 'ℹ ';
+    color: #3b82f6;
+    font-weight: bold;
+}
+
+/* 平滑滚动 */
+html {
+    scroll-behavior: smooth;
+}
+
+/* 文字阴影 */
+.text-glow {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* 响应式网格 */
+@media (max-width: 768px) {
+    .bento-item.large {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+
+    .bento-grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+}
+
+/* App 容器 */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    background: transparent;
+}
+
+/* 瀑布式布局区块 */
+.waterfall-section {
+    margin-bottom: 8rem;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* 侧边栏 */
+.sidebar {
+    width: 280px;
+    background: rgba(10, 22, 40, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    border-right: 1px solid rgba(0, 212, 255, 0.2);
+    z-index: 40;
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.sidebar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #00d4ff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.sidebar-subtitle {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.25rem;
+}
+
+.sidebar-info {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.sidebar-info p {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* 导航 */
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.875rem;
+}
+
+.nav-item:hover {
+    background: rgba(0, 212, 255, 0.15);
+    color: #00d4ff;
+}
+
+.nav-item.active {
+    background: rgba(0, 212, 255, 0.2);
+    color: #00d4ff;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+.nav-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* 社交链接 */
+.social-link {
+    color: rgba(255, 255, 255, 0.5);
+    transition: color 0.2s;
+}
+
+.social-link:hover {
+    color: #00d4ff;
+}
+
+/* 主内容区 */
+.main {
+    flex: 1;
+    margin-left: 280px;
+    padding: 2rem;
+    padding-top: 110vh;
+    color: white;
+    position: relative;
+    z-index: 3;
+    background: transparent;
+    pointer-events: none;
+}
+
+.main > * {
+    pointer-events: auto;
+}
+
+/* 头部 */
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.header-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.header-subtitle {
+    font-size: 1.125rem;
+    color: #666;
+}
+
+/* 内容区块 */
+.content {
+    margin-bottom: 3rem;
+}
+
+/* 页脚 */
+.footer {
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.footer-main {
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.footer-sub {
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+/* Toast 容器 */
+.toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 9999;
+}
