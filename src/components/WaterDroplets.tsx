@@ -278,21 +278,7 @@ void main(){
       mouse.active = true;
     };
     const handlePointerDown = (e: PointerEvent) => {
-      // 先更新鼠标坐标（即使用户没有移动鼠标）
-      const rect = renderer.domElement.getBoundingClientRect();
-      mouse.x = ((e.clientX - rect.left) / rect.width - 0.5) * aspect;
-      mouse.y = 0.5 - (e.clientY - rect.top) / rect.height;
-      mouse.active = true;
       mouse.down = true;
-      
-      // 点击生成一个水滴
-      if (drops.length < MAX_DROPLETS) {
-        spawn(
-          mouse.x + (Math.random() - 0.5) * 0.02,
-          mouse.y + (Math.random() - 0.5) * 0.02,
-          0.025 + Math.random() * 0.02,
-        );
-      }
     };
     const handlePointerUp = () => {
       mouse.down = false;
