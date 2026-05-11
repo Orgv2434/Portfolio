@@ -7,6 +7,18 @@ git config --global user.email "2569758095@qq.com"
 git config --global user.name "Orgv2434"
 
 echo.
+echo ===== 检查远程仓库配置 =====
+git remote -v
+
+echo.
+echo ===== 添加远程仓库 origin =====
+git remote add origin https://github.com/Orgv2434/Portfolio.git
+
+echo.
+echo ===== 再次检查远程仓库配置 =====
+git remote -v
+
+echo.
 echo ===== 检查 Git 状态 =====
 git status
 
