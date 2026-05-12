@@ -23,6 +23,11 @@ export const WaterDroplets = ({
     const MAX_CATCHUP = 6;
 
     const container = containerRef.current;
+
+    const bgCanvas = document.createElement('canvas');
+    const bgCtx = bgCanvas.getContext('2d');
+    if (!bgCtx) return;
+
     const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
     renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -31,10 +36,6 @@ export const WaterDroplets = ({
 
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-
-    const bgCanvas = document.createElement('canvas');
-    const bgCtx = bgCanvas.getContext('2d');
-    if (!bgCtx) return;
 
     const bgTexture = new THREE.CanvasTexture(bgCanvas);
     bgTexture.minFilter = THREE.LinearFilter;
@@ -266,7 +267,9 @@ void main(){
         uTime: { value: 0 },
       },
     });
-    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
+    const quadGeometry = new THREE.PlaneGeometry(2, 2);
+    const quad = new THREE.Mesh(quadGeometry, mat);
+    scene.add(quad);
 
     let aspect = window.innerWidth / window.innerHeight;
     const mouse = { x: 999, y: 999, active: false, down: false };
@@ -294,7 +297,7 @@ void main(){
     document.addEventListener("pointerup", handlePointerUp);
     document.addEventListener("pointerleave", handlePointerLeave);
 
-    window.addEventListener("resize", () => {
+    const onResize = () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
       aspect = window.innerWidth / window.innerHeight;
@@ -303,7 +306,8 @@ void main(){
         renderer.domElement.height,
       );
       drawBackground();
-    });
+    };
+    window.addEventListener("resize", onResize);
 
     const DAMP = 0.993;
     const MOUSE_R = 0.18;
@@ -547,6 +551,7 @@ void main(){
     let last = performance.now();
     let acc = 0;
     let paused = false;
+    let disposed = false;
 
     const handleVisibilityChange = () => {
       paused = document.hidden;
@@ -554,8 +559,9 @@ void main(){
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    let animationId: number;
-    (function loop() {
+    let animationId = 0;
+    const loop = () => {
+      if (disposed) return;
       animationId = requestAnimationFrame(loop);
       if (paused) return;
 
@@ -575,22 +581,31 @@ void main(){
       mat.uniforms.uTime.value = now * 0.001;
       sync();
       renderer.render(scene, camera);
-    })();
+    };
+    animationId = requestAnimationFrame(loop);
 
     return () => {
+      disposed = true;
       cancelAnimationFrame(animationId);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       document.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("pointerup", handlePointerUp);
       document.removeEventListener("pointerleave", handlePointerLeave);
-      container.removeChild(renderer.domElement);
-      renderer.dispose();
+      window.removeEventListener("resize", onResize);
+
+      scene.remove(quad);
+      quadGeometry.dispose();
       bgTexture.dispose();
       dropletTex.dispose();
       mat.dispose();
+
+      if (renderer.domElement.parentNode === container) {
+        container.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
     };
-  }, [title, subtitle, colors]);
+  }, [title, subtitle, colors.join(',')]);
 
   return (
     <div 
