@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Home, 
   FolderOpen, 
+  Star,
   PenTool, 
   Code, 
   Palette, 
@@ -29,26 +30,26 @@ interface Toast {
   type: 'success' | 'error' | 'info'
 }
 
-type SectionType = 'home' | 'featured' | 'planning' | 'technology' | 'ta' | 'ai' | 'knowledge'
+type SectionType = 'home' | 'info' | 'featured' | 'planning' | 'technology' | 'ta' | 'ai'
 
 const sectionDepthMap: Record<SectionType, number> = {
   home: 0,
-  featured: 500,
-  planning: 1500,
-  technology: 2500,
-  ta: 3500,
-  ai: 5000,
-  knowledge: 6000
+  info: 500,
+  featured: 1500,
+  planning: 2500,
+  technology: 3500,
+  ta: 4500,
+  ai: 6000
 }
 
 const navItems = [
   { id: 'home' as SectionType, icon: Home, label: '首页' },
-  { id: 'featured' as SectionType, icon: FolderOpen, label: '明星项目' },
+  { id: 'info' as SectionType, icon: FolderOpen, label: '信息页' },
+  { id: 'featured' as SectionType, icon: Star, label: '明星项目' },
   { id: 'planning' as SectionType, icon: PenTool, label: '策划能力' },
   { id: 'technology' as SectionType, icon: Code, label: '技术开发' },
   { id: 'ta' as SectionType, icon: Palette, label: 'TA & 美术' },
   { id: 'ai' as SectionType, icon: Brain, label: 'AI 应用' },
-  { id: 'knowledge' as SectionType, icon: BookOpen, label: '知识储备' },
 ]
 
 interface Project {
@@ -135,24 +136,15 @@ function App() {
         setShowSidebar(false)
       }
 
-      // 转场动效逻辑
-      // 从顶部向下滚动时，触发正常方向的SparklingWater动效
-      if (wasAtTop && !currentAtTop && isScrollingDown) {
-        setIsReversed(false)
-        setShowSparkling(true)
-        // 3秒后自动隐藏动效
-        setTimeout(() => setShowSparkling(false), 3000)
-      }
-      
-      // 滚动回顶部时，触发翻转方向的SparklingWater动效
-      if (!wasAtTop && currentAtTop && isScrollingUp) {
-        setIsReversed(true)
-        setShowSparkling(true)
-        // 3秒后自动隐藏动效
-        setTimeout(() => setShowSparkling(false), 3000)
+      // 禁止通过上滑手势返回到首页
+      // 当用户不在首页且向上滚动时，阻止滚动到首页区域
+      if (activeSection !== 'home' && isScrollingUp && newDepth < sectionDepthMap.info) {
+        // 限制滚动位置，禁止回到首页
+        window.scrollTo({ top: sectionDepthMap.info, behavior: 'auto' })
+        return
       }
 
-      const sections: SectionType[] = ['home', 'featured', 'planning', 'technology', 'ta', 'ai', 'knowledge']
+      const sections: SectionType[] = ['home', 'info', 'featured', 'planning', 'technology', 'ta', 'ai']
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i]
         const element = document.getElementById(section)
@@ -173,12 +165,12 @@ function App() {
   const getCurrentSectionName = useCallback(() => {
     const names: Record<SectionType, string> = {
       home: '海面',
-      featured: '浅海',
-      planning: '珊瑚礁',
-      technology: '深海平原',
-      ta: '热泉喷口',
-      ai: '深渊',
-      knowledge: '海沟'
+      info: '浅海',
+      featured: '珊瑚礁',
+      planning: '深海平原',
+      technology: '热泉喷口',
+      ta: '深渊',
+      ai: '海沟'
     }
     return names[activeSection]
   }, [activeSection])
@@ -240,8 +232,9 @@ function App() {
         )}
       </AnimatePresence>
       
-      {/* SparklingWater转场动效 - 滚动触发时显示 */}
+      {/* SparklingWater转场动效 - 点击首页时显示 */}
       <AnimatePresence>
+      
         {showSparkling && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -315,8 +308,15 @@ function App() {
               className={`nav-item ${activeSection === item.id ? 'active' : ''}`}
               onClick={() => {
                 setActiveSection(item.id)
-                const element = document.getElementById(item.id)
-                element?.scrollIntoView({ behavior: 'smooth' })
+                
+                // 点击首页时触发转场动效
+                if (item.id === 'home') {
+                  setIsReversed(true)
+                  setShowSparkling(true)
+                  setTimeout(() => setShowSparkling(false), 1200)
+                }
+                
+                window.scrollTo({ top: 0, behavior: 'auto' })
                 showToast(`切换到${item.label}`, 'info')
               }}
             >
@@ -363,30 +363,8 @@ function App() {
               animate={{ opacity: depth > 200 ? 1 : 0, y: depth > 200 ? 0 : 50 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
-                <h2 className="text-3xl font-bold mb-6 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🌊 海面 - 个人简介</h2>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <h3 className="text-xl font-bold mb-4 text-white/90">关于我</h3>
-                    <p className="text-white/80 leading-relaxed text-lg">
-                      我是一名游戏专业学生，具备策划、技术、TA 的全面能力。
-                      求职意向优先级：技术策划 → UE 客户端程序 → Unity 客户端程序。
-                      拥有多个完整项目经验，从策划到技术实现全流程参与。
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-4 text-white/90">核心能力</h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      {[...data.skills.planning, ...data.skills.programming, ...data.skills.ta].slice(0, 6).map((skill, idx) => (
-                        <span key={idx} className="px-4 py-2 bg-white/10 text-white rounded-full text-sm backdrop-blur-sm">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🌊 海面 - 首页</h2>
+              
               <h2 className="text-2xl font-bold mb-6 text-white/90" style={{ textShadow: '0 0 10px rgba(0, 212, 255, 0.3)' }}>🌟 明星项目预览</h2>
               <div className="bento-grid">
                 {isLoading ? (
@@ -404,6 +382,70 @@ function App() {
             </motion.div>
           )}
 
+          {activeSection === 'info' && (
+            <motion.div
+              key="info"
+              id="info"
+              className="waterfall-section"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🐠 浅海 - 信息页</h2>
+              
+              {/* 个人简介 */}
+              <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
+                <h3 className="text-xl font-bold mb-6 text-white/90">关于我</h3>
+                <p className="text-white/80 leading-relaxed text-lg">
+                  我是一名游戏专业学生，具备策划、技术、TA 的全面能力。
+                  求职意向优先级：技术策划 → UE 客户端程序 → Unity 客户端程序。
+                  拥有多个完整项目经验，从策划到技术实现全流程参与。
+                </p>
+              </div>
+
+              {/* 核心能力 */}
+              <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
+                <h3 className="text-xl font-bold mb-6 text-white/90">核心能力</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {[...data.skills.planning, ...data.skills.programming, ...data.skills.ta].slice(0, 6).map((skill, idx) => (
+                    <span key={idx} className="px-4 py-2 bg-white/10 text-white rounded-full text-sm backdrop-blur-sm">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* 个人信息 */}
+              <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
+                <h3 className="text-xl font-bold mb-6 text-white/90">个人信息</h3>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div>
+                    <p className="text-white/80 leading-relaxed">
+                      姓名：Nanako
+                    </p>
+                    <p className="text-white/80 leading-relaxed mt-2">
+                      专业：游戏设计与开发
+                    </p>
+                    <p className="text-white/80 leading-relaxed mt-2">
+                      学历：本科
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-white/80 leading-relaxed">
+                      邮箱：nanako@example.com
+                    </p>
+                    <p className="text-white/80 leading-relaxed mt-2">
+                      电话：123-4567-8900
+                    </p>
+                    <p className="text-white/80 leading-relaxed mt-2">
+                      所在地：北京
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {activeSection === 'featured' && (
             <motion.div
               key="featured"
@@ -413,7 +455,7 @@ function App() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🐠 浅海 - 明星项目</h2>
+              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>⭐ 明星项目</h2>
               <div className="bento-grid">
                 {isLoading ? (
                   <>
@@ -565,36 +607,6 @@ function App() {
             </motion.div>
           )}
 
-          {activeSection === 'knowledge' && (
-            <motion.div
-              key="knowledge"
-              id="knowledge"
-              className="waterfall-section"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🦐 海沟 - 知识储备</h2>
-              <div className="bento-grid">
-                {isLoading ? (
-                  <SkeletonCard isLarge />
-                ) : (
-                  <BentoCard onClick={handleProjectClick} key="game-dev-basics" project={data.projects.knowledge[0]} isLarge />
-                )}
-              </div>
-              <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
-                <h3 className="text-xl font-bold mb-6 text-white/90">经验亮点</h3>
-                <div className="space-y-4">
-                  {data.experience.map((exp, idx) => (
-                    <div key={idx} className="p-6 bg-white/10 rounded-xl backdrop-blur-sm">
-                      <h4 className="font-bold text-white">{exp.title}</h4>
-                      <p className="text-white/70 text-sm">{exp.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
         </AnimatePresence>
 
         <footer className="footer mt-16">
