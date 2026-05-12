@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 
-type SectionType = 'home' | 'info' | 'featured' | 'planning' | 'technology' | 'ta' | 'ai'
+type SectionType = 'home' | 'featured' | 'planning' | 'technology' | 'ta' | 'ai' | 'knowledge'
 
 interface SectionProps {
   id: SectionType

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Home, 
@@ -22,7 +22,6 @@ import { DepthIndicator } from './components/DepthIndicator'
 import { ScrollHint } from './components/ScrollHint'
 import { BentoCard } from './components/BentoCard'
 import { SkeletonCard } from './components/SkeletonCard'
-import { Section } from './components/Section'
 
 interface Toast {
   id: number
@@ -31,16 +30,6 @@ interface Toast {
 }
 
 type SectionType = 'home' | 'info' | 'featured' | 'planning' | 'technology' | 'ta' | 'ai'
-
-const sectionDepthMap: Record<SectionType, number> = {
-  home: 0,
-  info: 500,
-  featured: 1500,
-  planning: 2500,
-  technology: 3500,
-  ta: 4500,
-  ai: 6000
-}
 
 const navItems = [
   { id: 'home' as SectionType, icon: Home, label: '首页' },
@@ -93,14 +82,20 @@ function App() {
   const [showSparkling, setShowSparkling] = useState(false)    // 是否显示SparklingWater动效
   const [isReversed, setIsReversed] = useState(false)          // 动效是否翻转
   
-  // 上一次滚动位置，用于判断滚动方向
-  const lastScrollY = useCallback(() => {
-    let value = window.scrollY
-    return {
-      get: () => value,
-      set: (newVal: number) => { value = newVal }
-    }
-  }, [])()
+  // 上一次滚动位置，用于判断滚动方向（必须用 ref，避免每次 render 新建对象导致重复绑定 scroll）
+  const lastScrollYRef = useRef(0)
+  /** 从信息区上滑回首页的转场冷却，避免橡皮筋/多帧重复触发 */
+  const lastHomePullTransitionAtRef = useRef(0)
+  /** 首页下滑进入信息页的转场冷却与锁 */
+  const lastInfoEnterTransitionAtRef = useRef(0)
+  const infoEnterTransitionLockRef = useRef(false)
+  const infoEnterTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const SPARKLE_TRANSITION_MS = 1200
+  const activeSectionRef = useRef<SectionType>(activeSection)
+  useEffect(() => {
+    activeSectionRef.current = activeSection
+  }, [activeSection])
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1500)
@@ -113,35 +108,88 @@ function App() {
       const newDepth = scrollY * 3
       setDepth(newDepth)
       
-      // 判断是否在顶部（滚动距离小于50px认为在顶部）
+      const prevScrollY = lastScrollYRef.current
+      const isScrollingUp = scrollY < prevScrollY
+      lastScrollYRef.current = scrollY
+      
       const currentAtTop = scrollY < 50
-      const wasAtTop = isAtTop
-      
-      // 判断滚动方向
-      const isScrollingDown = scrollY > lastScrollY.get()
-      const isScrollingUp = scrollY < lastScrollY.get()
-      
-      // 更新上一次滚动位置
-      lastScrollY.set(scrollY)
-      
       // 更新顶部状态
       setIsAtTop(currentAtTop)
       
-      // 滚动提示和侧边栏显示逻辑
-      if (newDepth > 100) {
-        setShowScrollHint(false)
-        setShowSidebar(true)
-      } else {
-        setShowScrollHint(true)
-        setShowSidebar(false)
-      }
+      const infoEl = document.getElementById('info')
+      const infoTop = infoEl?.offsetTop
+      if (infoTop != null && infoTop > 0) {
+        const showSidebarThresholdPx = infoTop - 80
+        if (scrollY >= showSidebarThresholdPx) {
+          setShowScrollHint(false)
+          setShowSidebar(true)
+        } else {
+          setShowScrollHint(scrollY < infoTop - 150)
+          setShowSidebar(false)
+        }
 
-      // 禁止通过上滑手势返回到首页
-      // 当用户不在首页且向上滚动时，阻止滚动到首页区域
-      if (activeSection !== 'home' && isScrollingUp && newDepth < sectionDepthMap.info) {
-        // 限制滚动位置，禁止回到首页
-        window.scrollTo({ top: sectionDepthMap.info, behavior: 'auto' })
-        return
+        // 仅在「信息区顶缘附近」继续上滑时回到首页；避免在首页长屏中段上滑时误触 scrollTo(0)
+        const now = Date.now()
+        const pullCooldownOk = now - lastHomePullTransitionAtRef.current > 1000
+        const prevNearInfoTop =
+          prevScrollY >= infoTop - 48 && prevScrollY <= infoTop + 72
+        const nowLeavingInfoBand =
+          scrollY >= infoTop - 88 && scrollY < infoTop - 16
+        const leavingInfoTowardHome =
+          pullCooldownOk &&
+          !infoEnterTransitionLockRef.current &&
+          isScrollingUp &&
+          prevNearInfoTop &&
+          nowLeavingInfoBand
+        if (leavingInfoTowardHome) {
+          lastHomePullTransitionAtRef.current = now
+          activeSectionRef.current = 'home'
+          setActiveSection('home')
+          setIsReversed(true)
+          setShowSparkling(true)
+          setShowSidebar(false)
+          setTimeout(() => setShowSparkling(false), SPARKLE_TRANSITION_MS)
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+          lastScrollYRef.current = scrollY
+          return
+        }
+
+        // 在首页区域（尚未进入信息区锚点）任意一次向下滚动即触发正向转场，不必滚到信息区门口
+        const enterCooldownOk = now - lastInfoEnterTransitionAtRef.current > SPARKLE_TRANSITION_MS
+        const stillBeforeInfoAnchor = scrollY < infoTop - 8
+        const scrolledDownByWheel = scrollY > prevScrollY
+        const homeToInfoDown =
+          enterCooldownOk &&
+          now - lastHomePullTransitionAtRef.current > 400 &&
+          !infoEnterTransitionLockRef.current &&
+          scrolledDownByWheel &&
+          stillBeforeInfoAnchor
+        if (homeToInfoDown) {
+          infoEnterTransitionLockRef.current = true
+          setIsReversed(false)
+          setShowSparkling(true)
+          document.documentElement.style.overflow = 'hidden'
+          if (infoEnterTimeoutRef.current) clearTimeout(infoEnterTimeoutRef.current)
+          infoEnterTimeoutRef.current = window.setTimeout(() => {
+            infoEnterTimeoutRef.current = null
+            const info = document.getElementById('info')
+            const top = info?.offsetTop ?? 0
+            window.scrollTo({ top, behavior: 'auto' })
+            setShowSparkling(false)
+            activeSectionRef.current = 'info'
+            setActiveSection('info')
+            lastScrollYRef.current = top
+            document.documentElement.style.overflow = ''
+            infoEnterTransitionLockRef.current = false
+            // 冷却从「落地」算起，避免 scrollTo 后同一帧/紧随其后的滚动再次触发第二次进信息页转场
+            lastInfoEnterTransitionAtRef.current = Date.now()
+          }, SPARKLE_TRANSITION_MS)
+          lastScrollYRef.current = scrollY
+          return
+        }
+      } else {
+        setShowScrollHint(scrollY < 120)
+        setShowSidebar(false)
       }
 
       const sections: SectionType[] = ['home', 'info', 'featured', 'planning', 'technology', 'ta', 'ai']
@@ -159,8 +207,17 @@ function App() {
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [isAtTop])
+    handleScroll()
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (infoEnterTimeoutRef.current) {
+        clearTimeout(infoEnterTimeoutRef.current)
+        infoEnterTimeoutRef.current = null
+      }
+      document.documentElement.style.overflow = ''
+      infoEnterTransitionLockRef.current = false
+    }
+  }, [])
 
   const getCurrentSectionName = useCallback(() => {
     const names: Record<SectionType, string> = {
@@ -214,9 +271,9 @@ function App() {
         }}
       />
       
-      {/* WaterDroplets泡泡背景 - 仅在顶部显示 */}
+      {/* WaterDroplets 背景：转场时关闭，避免与 SparklingWater 的入场/本层退场叠成「两段动效」 */}
       <AnimatePresence>
-        {isAtTop && (
+        {isAtTop && !showSparkling && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -308,15 +365,19 @@ function App() {
               className={`nav-item ${activeSection === item.id ? 'active' : ''}`}
               onClick={() => {
                 setActiveSection(item.id)
-                
-                // 点击首页时触发转场动效
+
                 if (item.id === 'home') {
+                  // 与 scroll 里读取的 ref 同步，避免 smooth 滚顶过程中仍被视为「非首页」
+                  activeSectionRef.current = 'home'
                   setIsReversed(true)
                   setShowSparkling(true)
-                  setTimeout(() => setShowSparkling(false), 1200)
+                  setShowSidebar(false)
+                  setTimeout(() => setShowSparkling(false), SPARKLE_TRANSITION_MS)
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                } else {
+                  document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
                 }
-                
-                window.scrollTo({ top: 0, behavior: 'auto' })
+
                 showToast(`切换到${item.label}`, 'info')
               }}
             >
@@ -353,261 +414,239 @@ function App() {
           </div>
         </motion.div>
 
-        <AnimatePresence mode="wait">
-          {activeSection === 'home' && (
-            <motion.div
-              key="home"
-              id="home"
-              className="waterfall-section"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: depth > 200 ? 1 : 0, y: depth > 200 ? 0 : 50 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🌊 海面 - 首页</h2>
-              
-              <h2 className="text-2xl font-bold mb-6 text-white/90" style={{ textShadow: '0 0 10px rgba(0, 212, 255, 0.3)' }}>🌟 明星项目预览</h2>
-              <div className="bento-grid">
-                {isLoading ? (
-                  <>
-                    <SkeletonCard isLarge />
-                    <SkeletonCard />
-                    <SkeletonCard />
-                  </>
-                ) : (
-                  data.projects.featured.slice(0, 3).map((project) => (
-                    <BentoCard onClick={handleProjectClick} key={project.id} project={project} isLarge={project.isLarge} />
-                  ))
-                )}
-              </div>
-            </motion.div>
-          )}
+        <>
+          <motion.div
+            key="home"
+            id="home"
+            className="waterfall-section waterfall-section--home flex flex-col items-center justify-center"
+            initial={false}
+            animate={{ opacity: depth > 200 ? 1 : 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="relative w-full max-w-4xl mx-auto mb-8">
+              <WaterDroplets 
+                title="Nanako's Profile"
+                subtitle="游戏开发 | 技术策划 | TA"
+                colors={["#0a1628", "#0d2137", "#134b6e", "#1a6f9a", "#2ec4b6"]}
+              />
+            </div>
+            <div className="text-center mt-8">
+              <p className="text-white/80 text-lg leading-relaxed max-w-2xl mx-auto">
+                探索海洋深处的数字世界，发现无限可能
+              </p>
+            </div>
+          </motion.div>
 
-          {activeSection === 'info' && (
-            <motion.div
-              key="info"
-              id="info"
-              className="waterfall-section"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🐠 浅海 - 信息页</h2>
-              
-              {/* 个人简介 */}
-              <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
-                <h3 className="text-xl font-bold mb-6 text-white/90">关于我</h3>
-                <p className="text-white/80 leading-relaxed text-lg">
-                  我是一名游戏专业学生，具备策划、技术、TA 的全面能力。
-                  求职意向优先级：技术策划 → UE 客户端程序 → Unity 客户端程序。
-                  拥有多个完整项目经验，从策划到技术实现全流程参与。
-                </p>
-              </div>
+          <motion.div
+            key="info"
+            id="info"
+            className="waterfall-section"
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🐠 浅海 - 信息页</h2>
+            
+            <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
+              <h3 className="text-xl font-bold mb-6 text-white/90">关于我</h3>
+              <p className="text-white/80 leading-relaxed text-lg">
+                我是一名游戏专业学生，具备策划、技术、TA 的全面能力。
+                求职意向优先级：技术策划 → UE 客户端程序 → Unity 客户端程序。
+                拥有多个完整项目经验，从策划到技术实现全流程参与。
+              </p>
+            </div>
 
-              {/* 核心能力 */}
-              <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
-                <h3 className="text-xl font-bold mb-6 text-white/90">核心能力</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {[...data.skills.planning, ...data.skills.programming, ...data.skills.ta].slice(0, 6).map((skill, idx) => (
-                    <span key={idx} className="px-4 py-2 bg-white/10 text-white rounded-full text-sm backdrop-blur-sm">
-                      {skill}
-                    </span>
-                  ))}
+            <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
+              <h3 className="text-xl font-bold mb-6 text-white/90">核心能力</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {[...data.skills.planning, ...data.skills.programming, ...data.skills.ta].slice(0, 6).map((skill, idx) => (
+                  <span key={idx} className="px-4 py-2 bg-white/10 text-white rounded-full text-sm backdrop-blur-sm">
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
+              <h3 className="text-xl font-bold mb-6 text-white/90">个人信息</h3>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <p className="text-white/80 leading-relaxed">
+                    姓名：Nanako
+                  </p>
+                  <p className="text-white/80 leading-relaxed mt-2">
+                    专业：游戏设计与开发
+                  </p>
+                  <p className="text-white/80 leading-relaxed mt-2">
+                    学历：本科
+                  </p>
+                </div>
+                <div>
+                  <p className="text-white/80 leading-relaxed">
+                    邮箱：nanako@example.com
+                  </p>
+                  <p className="text-white/80 leading-relaxed mt-2">
+                    电话：123-4567-8900
+                  </p>
+                  <p className="text-white/80 leading-relaxed mt-2">
+                    所在地：北京
+                  </p>
                 </div>
               </div>
+            </div>
+          </motion.div>
 
-              {/* 个人信息 */}
-              <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
-                <h3 className="text-xl font-bold mb-6 text-white/90">个人信息</h3>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <p className="text-white/80 leading-relaxed">
-                      姓名：Nanako
-                    </p>
-                    <p className="text-white/80 leading-relaxed mt-2">
-                      专业：游戏设计与开发
-                    </p>
-                    <p className="text-white/80 leading-relaxed mt-2">
-                      学历：本科
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-white/80 leading-relaxed">
-                      邮箱：nanako@example.com
-                    </p>
-                    <p className="text-white/80 leading-relaxed mt-2">
-                      电话：123-4567-8900
-                    </p>
-                    <p className="text-white/80 leading-relaxed mt-2">
-                      所在地：北京
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {activeSection === 'featured' && (
-            <motion.div
-              key="featured"
-              id="featured"
-              className="waterfall-section"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>⭐ 明星项目</h2>
-              <div className="bento-grid">
-                {isLoading ? (
-                  <>
-                    <SkeletonCard isLarge />
-                    <SkeletonCard isLarge />
-                    <SkeletonCard isLarge />
-                  </>
-                ) : (
-                  data.projects.featured.map((project) => (
-                    <BentoCard onClick={handleProjectClick} key={project.id} project={project} isLarge={project.isLarge} />
-                  ))
-                )}
-              </div>
-            </motion.div>
-          )}
-
-          {activeSection === 'planning' && (
-            <motion.div
-              key="planning"
-              id="planning"
-              className="waterfall-section"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🪸 珊瑚礁 - 策划能力</h2>
-              <div className="bento-grid">
-                {isLoading ? (
-                  <>
-                    <SkeletonCard />
-                    <SkeletonCard />
-                  </>
-                ) : (
-                  data.projects.planning.map((project) => (
-                    <BentoCard onClick={handleProjectClick} key={project.id} project={project} />
-                  ))
-                )}
-              </div>
-              <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
-                <h3 className="text-xl font-bold mb-6 text-white/90">策划技能</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {data.skills.planning.map((skill, idx) => (
-                    <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-                      <span className="text-2xl">📋</span>
-                      <span className="font-medium text-white">{skill}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {activeSection === 'technology' && (
-            <motion.div
-              key="technology"
-              id="technology"
-              className="waterfall-section"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🦑 深海平原 - 技术开发</h2>
-              <div className="bento-grid">
-                {isLoading ? (
-                  <>
-                    <SkeletonCard isLarge />
-                    <SkeletonCard />
-                  </>
-                ) : (
-                  <>
-                    <BentoCard onClick={handleProjectClick} key="client-dev" project={data.projects.technology[0]} isLarge />
-                    <BentoCard onClick={handleProjectClick} key="tech-other" project={data.projects.technology[1]} />
-                  </>
-                )}
-              </div>
-              <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
-                <h3 className="text-xl font-bold mb-6 text-white/90">编程技能</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {data.skills.programming.map((skill, idx) => (
-                    <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-                      <span className="text-2xl">💻</span>
-                      <span className="font-medium text-white">{skill}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {activeSection === 'ta' && (
-            <motion.div
-              key="ta"
-              id="ta"
-              className="waterfall-section"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🌋 热泉喷口 - TA & 美术技术</h2>
-              <div className="bento-grid">
-                {isLoading ? (
+          <motion.div
+            key="featured"
+            id="featured"
+            className="waterfall-section"
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>⭐ 明星项目</h2>
+            <div className="bento-grid">
+              {isLoading ? (
+                <>
                   <SkeletonCard isLarge />
-                ) : (
-                  <BentoCard onClick={handleProjectClick} key="visual-effects" project={data.projects.technology[1]} isLarge />
-                )}
-              </div>
-              <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
-                <h3 className="text-xl font-bold mb-6 text-white/90">TA 技能</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {data.skills.ta.map((skill, idx) => (
-                    <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-                      <span className="text-2xl">🎨</span>
-                      <span className="font-medium text-white">{skill}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {activeSection === 'ai' && (
-            <motion.div
-              key="ai"
-              id="ai"
-              className="waterfall-section"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>👾 深渊 - AI 应用</h2>
-              <div className="bento-grid">
-                {isLoading ? (
                   <SkeletonCard isLarge />
-                ) : (
-                  <BentoCard onClick={handleProjectClick} key="ai-integration" project={data.projects.ai[0]} isLarge />
-                )}
-              </div>
-              <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
-                <h3 className="text-xl font-bold mb-6 text-white/90">AI 技能</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {data.skills.ai.map((skill, idx) => (
-                    <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-                      <span className="text-2xl">🧠</span>
-                      <span className="font-medium text-white">{skill}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
+                  <SkeletonCard isLarge />
+                </>
+              ) : (
+                data.projects.featured.map((project) => (
+                  <BentoCard onClick={handleProjectClick} key={project.id} project={project} isLarge={project.isLarge} />
+                ))
+              )}
+            </div>
+          </motion.div>
 
-        </AnimatePresence>
+          <motion.div
+            key="planning"
+            id="planning"
+            className="waterfall-section"
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🪸 珊瑚礁 - 策划能力</h2>
+            <div className="bento-grid">
+              {isLoading ? (
+                <>
+                  <SkeletonCard />
+                  <SkeletonCard />
+                </>
+              ) : (
+                data.projects.planning.map((project) => (
+                  <BentoCard onClick={handleProjectClick} key={project.id} project={project} />
+                ))
+              )}
+            </div>
+            <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
+              <h3 className="text-xl font-bold mb-6 text-white/90">策划技能</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {data.skills.planning.map((skill, idx) => (
+                  <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
+                    <span className="text-2xl">📋</span>
+                    <span className="font-medium text-white">{skill}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            key="technology"
+            id="technology"
+            className="waterfall-section"
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🦑 深海平原 - 技术开发</h2>
+            <div className="bento-grid">
+              {isLoading ? (
+                <>
+                  <SkeletonCard isLarge />
+                  <SkeletonCard />
+                </>
+              ) : (
+                <>
+                  <BentoCard onClick={handleProjectClick} key="client-dev" project={data.projects.technology[0]} isLarge />
+                  <BentoCard onClick={handleProjectClick} key="tech-other" project={data.projects.technology[1]} />
+                </>
+              )}
+            </div>
+            <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
+              <h3 className="text-xl font-bold mb-6 text-white/90">编程技能</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {data.skills.programming.map((skill, idx) => (
+                  <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
+                    <span className="text-2xl">💻</span>
+                    <span className="font-medium text-white">{skill}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            key="ta"
+            id="ta"
+            className="waterfall-section"
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🌋 热泉喷口 - TA & 美术技术</h2>
+            <div className="bento-grid">
+              {isLoading ? (
+                <SkeletonCard isLarge />
+              ) : (
+                <BentoCard onClick={handleProjectClick} key="visual-effects" project={data.projects.technology[1]} isLarge />
+              )}
+            </div>
+            <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
+              <h3 className="text-xl font-bold mb-6 text-white/90">TA 技能</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {data.skills.ta.map((skill, idx) => (
+                  <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
+                    <span className="text-2xl">🎨</span>
+                    <span className="font-medium text-white">{skill}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            key="ai"
+            id="ai"
+            className="waterfall-section"
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>👾 深渊 - AI 应用</h2>
+            <div className="bento-grid">
+              {isLoading ? (
+                <SkeletonCard isLarge />
+              ) : (
+                <BentoCard onClick={handleProjectClick} key="ai-integration" project={data.projects.ai[0]} isLarge />
+              )}
+            </div>
+            <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
+              <h3 className="text-xl font-bold mb-6 text-white/90">AI 技能</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {data.skills.ai.map((skill, idx) => (
+                  <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
+                    <span className="text-2xl">🧠</span>
+                    <span className="font-medium text-white">{skill}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </>
 
         <footer className="footer mt-16">
           <div className="glass rounded-2xl p-6 backdrop-blur-md">
