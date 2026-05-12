@@ -1,6 +1,97 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+/** 与主站各区块氛围一致的泡泡/背景渐变锚点（与 App 背景层次呼应） */
+const SECTION_IDS = ['home', 'info', 'featured', 'planning', 'technology', 'ta', 'ai'] as const;
+const SECTION_PALETTES: Record<(typeof SECTION_IDS)[number], [string, string, string, string]> = {
+  home: ['#0a1628', '#0d2137', '#134b6e', '#1a6f9a'],
+  info: ['#0a1628', '#124a6e', '#1a6f9a', '#2ec4b6'],
+  featured: ['#0d2137', '#1a3f6e', '#6b4c9a', '#d4a574'],
+  planning: ['#0a1e2e', '#16506e', '#2a8f8f', '#3dd6c6'],
+  technology: ['#081828', '#0f3a5c', '#1a6f9a', '#4a9fff'],
+  ta: ['#12081c', '#2a1050', '#4a1a6e', '#9b6dcc'],
+  ai: ['#060a14', '#142a4a', '#2e6aa0', '#6ee7b7'],
+};
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
+  if (!m) return { r: 20, g: 40, b: 80 };
+  return { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) };
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  const c = (n: number) =>
+    Math.max(0, Math.min(255, Math.round(n)))
+      .toString(16)
+      .padStart(2, '0');
+  return `#${c(r)}${c(g)}${c(b)}`;
+}
+
+function lerpHex(a: string, b: string, t: number): string {
+  const u = Math.max(0, Math.min(1, t));
+  const A = hexToRgb(a);
+  const B = hexToRgb(b);
+  return rgbToHex(
+    A.r + (B.r - A.r) * u,
+    A.g + (B.g - A.g) * u,
+    A.b + (B.b - A.b) * u,
+  );
+}
+
+function rgbToHsl(r: number, g: number, b: number): { h: number; s: number; l: number } {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+  const d = max - min;
+  if (d > 1e-6) {
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      default:
+        h = (r - g) / d + 4;
+    }
+    h /= 6;
+  }
+  return { h, s, l };
+}
+
+function getTargetPaletteFromScroll(scrollY: number): string[] {
+  const tops = SECTION_IDS.map((id) => document.getElementById(id)?.offsetTop ?? 0);
+  const last = SECTION_IDS.length - 1;
+
+  if (tops[last] <= tops[0]) return [...SECTION_PALETTES.home];
+
+  if (scrollY <= tops[0]) return [...SECTION_PALETTES[SECTION_IDS[0]]];
+  if (scrollY >= tops[last]) return [...SECTION_PALETTES[SECTION_IDS[last]]];
+
+  let i = 0;
+  for (let k = 0; k < last; k++) {
+    if (scrollY >= tops[k] && scrollY < tops[k + 1]) {
+      i = k;
+      break;
+    }
+  }
+
+  const span = Math.max(1, tops[i + 1] - tops[i]);
+  let t = (scrollY - tops[i]) / span;
+  t = Math.max(0, Math.min(1, t));
+  t = t * t * (3 - 2 * t);
+
+  const A = SECTION_PALETTES[SECTION_IDS[i]];
+  const B = SECTION_PALETTES[SECTION_IDS[i + 1]];
+  return [0, 1, 2, 3].map((idx) => lerpHex(A[idx], B[idx], t));
+}
+
 interface WaterDropletsProps {
   title?: string;
   subtitle?: string;
@@ -41,6 +132,13 @@ export const WaterDroplets = ({
     bgTexture.minFilter = THREE.LinearFilter;
     bgTexture.magFilter = THREE.LinearFilter;
 
+    const workingColors: string[] = [
+      colors[0] || SECTION_PALETTES.home[0],
+      colors[1] || SECTION_PALETTES.home[1],
+      colors[2] || SECTION_PALETTES.home[2],
+      colors[3] || SECTION_PALETTES.home[3],
+    ];
+
     function drawBackground() {
       if (!bgCtx) return;
       
@@ -50,22 +148,25 @@ export const WaterDroplets = ({
       bgCanvas.height = h;
 
       const grd = bgCtx.createLinearGradient(0, 0, w * 0.6, h);
-      grd.addColorStop(0, colors[0] || "#e8dbc8");
-      grd.addColorStop(0.35, colors[1] || "#5b8cdb");
-      grd.addColorStop(0.6, colors[2] || "#2d6fd4");
-      grd.addColorStop(1, colors[3] || "#1a3fa0");
+      grd.addColorStop(0, workingColors[0] || "#e8dbc8");
+      grd.addColorStop(0.35, workingColors[1] || "#5b8cdb");
+      grd.addColorStop(0.6, workingColors[2] || "#2d6fd4");
+      grd.addColorStop(1, workingColors[3] || "#1a3fa0");
       bgCtx.fillStyle = grd;
       bgCtx.fillRect(0, 0, w, h);
 
       bgCtx.save();
       bgCtx.globalAlpha = 0.35;
+      const midRgb = hexToRgb(workingColors[2] || "#1a6f9a");
+      const hsl = rgbToHsl(midRgb.r, midRgb.g, midRgb.b);
+      const baseH = hsl.h * 360;
       for (let i = 0; i < 5; i++) {
         const cx = w * (0.2 + i * 0.18);
         const cy = h * (0.3 + Math.sin(i * 1.3) * 0.25);
         const rg = bgCtx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.35);
-        const hue = 200 + i * 25;
-        rg.addColorStop(0, `hsla(${hue}, 80%, 65%, 0.6)`);
-        rg.addColorStop(1, `hsla(${hue}, 60%, 40%, 0)`);
+        const hue = (baseH + i * 22 + 360) % 360;
+        rg.addColorStop(0, `hsla(${hue}, 72%, 58%, 0.55)`);
+        rg.addColorStop(1, `hsla(${hue}, 55%, 38%, 0)`);
         bgCtx.fillStyle = rg;
         bgCtx.fillRect(0, 0, w, h);
       }
@@ -117,19 +218,29 @@ export const WaterDroplets = ({
     dropletTex.magFilter = THREE.NearestFilter;
     dropletTex.needsUpdate = true;
 
+    const MAX_DROPLET_R = 0.25;
+
+    function clampDropRadius(d: { r: number; area: number }) {
+      if (d.r > MAX_DROPLET_R) {
+        d.r = MAX_DROPLET_R;
+        d.area = Math.PI * d.r * d.r;
+      }
+    }
+
     let drops: any[] = [];
     let uid = 0;
 
     function spawn(x: number, y: number, r: number, vx = 0, vy = 0) {
       if (drops.length >= MAX_DROPLETS) return null;
-      const area = Math.PI * r * r;
+      const rr = Math.min(r, MAX_DROPLET_R * 0.92);
+      const area = Math.PI * rr * rr;
       const angle = Math.random() * Math.PI * 2;
       const spd = 0.0003 + Math.random() * 0.0008;
       const d = {
         id: uid++,
         x,
         y,
-        r,
+        r: rr,
         area,
         vx: vx || Math.cos(angle) * spd,
         vy: vy || Math.sin(angle) * spd,
@@ -151,7 +262,7 @@ export const WaterDroplets = ({
       spawn(
         (Math.random() - 0.5) * 0.7,
         (Math.random() - 0.5) * 0.5,
-        0.03 + Math.random() * 0.05,
+        0.026 + Math.random() * 0.018,
       );
     }
 
@@ -421,11 +532,13 @@ void main(){
             a.vy = (a.vy * a.area + b.vy * b.area) / na;
             a.r = Math.sqrt(na / Math.PI);
             a.area = na;
+            clampDropRadius(a);
             b.alive = false;
           }
         }
       }
       drops = drops.filter((d) => d.alive);
+      for (const d of drops) clampDropRadius(d);
     }
 
     function splitDroplets() {
@@ -443,6 +556,7 @@ void main(){
 
         d.r = nr;
         d.area = ha;
+        clampDropRadius(d);
         d.x -= nx * off;
         d.y -= ny * off;
 
@@ -465,7 +579,12 @@ void main(){
           softVelY: 0,
         });
       }
-      for (const a of add) if (drops.length < MAX_DROPLETS) drops.push(a);
+      for (const a of add) {
+        if (drops.length < MAX_DROPLETS) {
+          clampDropRadius(a);
+          drops.push(a);
+        }
+      }
     }
 
     let autoTimer = 0;
@@ -579,6 +698,12 @@ void main(){
       if (g >= MAX_CATCHUP) acc = 0;
 
       mat.uniforms.uTime.value = now * 0.001;
+      const tgt = getTargetPaletteFromScroll(window.scrollY);
+      const step = Math.min(0.12, 1 - Math.pow(0.966, dt / 14));
+      for (let ci = 0; ci < 4; ci++) {
+        workingColors[ci] = lerpHex(workingColors[ci], tgt[ci], step);
+      }
+      drawBackground();
       sync();
       renderer.render(scene, camera);
     };
