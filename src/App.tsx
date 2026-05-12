@@ -22,14 +22,13 @@ import { DepthIndicator } from './components/DepthIndicator'
 import { ScrollHint } from './components/ScrollHint'
 import { BentoCard } from './components/BentoCard'
 import { SkeletonCard } from './components/SkeletonCard'
+import { SECTION_PALETTES, type SectionType } from './sectionPalettes'
 
 interface Toast {
   id: number
   message: string
   type: 'success' | 'error' | 'info'
 }
-
-type SectionType = 'home' | 'info' | 'featured' | 'planning' | 'technology' | 'ta' | 'ai'
 
 const navItems = [
   { id: 'home' as SectionType, icon: Home, label: '首页' },
@@ -81,6 +80,10 @@ function App() {
   const [isAtTop, setIsAtTop] = useState(true)           // 是否在顶部
   const [showSparkling, setShowSparkling] = useState(false)    // 是否显示SparklingWater动效
   const [isReversed, setIsReversed] = useState(false)          // 动效是否翻转
+  const [sparkleTransition, setSparkleTransition] = useState<{
+    from: SectionType
+    to: SectionType
+  }>({ from: 'home', to: 'info' })
   
   // 上一次滚动位置，用于判断滚动方向（必须用 ref，避免每次 render 新建对象导致重复绑定 scroll）
   const lastScrollYRef = useRef(0)
@@ -146,6 +149,7 @@ function App() {
           activeSectionRef.current = 'home'
           setActiveSection('home')
           setIsReversed(true)
+          setSparkleTransition({ from: 'info', to: 'home' })
           setShowSparkling(true)
           setShowSidebar(false)
           setTimeout(() => setShowSparkling(false), SPARKLE_TRANSITION_MS)
@@ -167,6 +171,7 @@ function App() {
         if (homeToInfoDown) {
           infoEnterTransitionLockRef.current = true
           setIsReversed(false)
+          setSparkleTransition({ from: 'home', to: 'info' })
           setShowSparkling(true)
           document.documentElement.style.overflow = 'hidden'
           if (infoEnterTimeoutRef.current) clearTimeout(infoEnterTimeoutRef.current)
@@ -303,6 +308,9 @@ function App() {
             <SparklingWater 
               reversed={isReversed} 
               visible={showSparkling}
+              paletteFrom={SECTION_PALETTES[sparkleTransition.from]}
+              paletteTo={SECTION_PALETTES[sparkleTransition.to]}
+              durationMs={SPARKLE_TRANSITION_MS}
             />
           </motion.div>
         )}
@@ -364,12 +372,14 @@ function App() {
               key={item.id}
               className={`nav-item ${activeSection === item.id ? 'active' : ''}`}
               onClick={() => {
+                const prevSec = activeSectionRef.current
                 setActiveSection(item.id)
 
                 if (item.id === 'home') {
                   // 与 scroll 里读取的 ref 同步，避免 smooth 滚顶过程中仍被视为「非首页」
                   activeSectionRef.current = 'home'
                   setIsReversed(true)
+                  setSparkleTransition({ from: prevSec, to: 'home' })
                   setShowSparkling(true)
                   setShowSidebar(false)
                   setTimeout(() => setShowSparkling(false), SPARKLE_TRANSITION_MS)
