@@ -26,6 +26,31 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
     return () => clearTimeout(timer);
   }, [isPlaying]);
 
+  useEffect(() => {
+    if (!isDraggingProgress) return;
+
+    const handleDocumentMouseMove = (e: MouseEvent) => {
+      if (!progressRef.current || !videoRef.current) return;
+      const rect = progressRef.current.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
+      const newTime = Math.max(0, Math.min(percent * duration, duration));
+      videoRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    };
+
+    const handleDocumentMouseUp = () => {
+      setIsDraggingProgress(false);
+    };
+
+    document.addEventListener('mousemove', handleDocumentMouseMove);
+    document.addEventListener('mouseup', handleDocumentMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleDocumentMouseMove);
+      document.removeEventListener('mouseup', handleDocumentMouseUp);
+    };
+  }, [isDraggingProgress, duration]);
+
   const handleMouseMove = () => {
     setShowControls(true);
     clearTimeout((window as unknown as { videoControlTimer?: number }).videoControlTimer);
@@ -93,10 +118,6 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
 
   const handleProgressMouseDown = () => {
     setIsDraggingProgress(true);
-  };
-
-  const handleProgressMouseUp = () => {
-    setIsDraggingProgress(false);
   };
 
   const formatTime = (seconds: number) => {
@@ -217,8 +238,6 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
         className="absolute bottom-16 left-0 right-0 h-1 bg-white/20 cursor-pointer group"
         onClick={handleProgressClick}
         onMouseDown={handleProgressMouseDown}
-        onMouseUp={handleProgressMouseUp}
-        onMouseLeave={handleProgressMouseUp}
       >
         <div
           className="h-full bg-white transition-all"
