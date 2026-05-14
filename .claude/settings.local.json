@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(ls -la \"D:\\\\000_收集箱\\\\作品集\\\\作品视频\" 2>/dev/null | head -30)",
+      "Bash(cp \"D:\\\\000_收集箱\\\\作品集\\\\作品视频\\\\Eat Your Fish\\\\实机视频.mp4\" ./eat-your-fish.mp4)",
+      "Bash(cp \"D:\\\\000_收集箱\\\\作品集\\\\作品视频\\\\小镇警察\\\\宣传视频.mp4\" ./town-police.mp4)",
+      "Bash(cp \"D:\\\\000_收集箱\\\\作品集\\\\作品视频\\\\某天头上长出了对话框\\\\宣传视频.mp4\" ./dialog-box.mp4)",
+      "Bash(cp \"D:\\\\000_收集箱\\\\作品集\\\\作品视频\\\\西部酒馆\\\\实机录制视频.mp4\" ./western-tavern.mp4)"
+    ]
+  }
+}

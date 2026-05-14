@@ -89,6 +89,30 @@ export const WaterDroplets = ({
       }
       bgCtx.restore();
 
+      // 绘制标题文字 - 在 canvas 上渲染，受到泡泡效果影响
+      bgCtx.fillStyle = "#ffffff";
+      bgCtx.textAlign = "center";
+      bgCtx.textBaseline = "middle";
+
+      const titleSize = Math.min(Math.round(w * 0.12), Math.round(h * 0.2));
+      bgCtx.font = `700 ${titleSize}px 'Cinzel Decorative', 'serif'`;
+
+      const maxTitleWidth = w * 0.9;
+      const titleMetrics = bgCtx.measureText(title);
+      if (titleMetrics.width > maxTitleWidth) {
+        const scale = maxTitleWidth / titleMetrics.width;
+        const scaledSize = Math.round(titleSize * scale);
+        bgCtx.font = `700 ${scaledSize}px 'Cinzel Decorative', 'serif'`;
+      }
+
+      // 添加文字阴影效果
+      bgCtx.shadowColor = 'rgba(0, 80, 160, 0.5)';
+      bgCtx.shadowBlur = 30;
+      bgCtx.shadowOffsetX = 2;
+      bgCtx.shadowOffsetY = 2;
+      bgCtx.fillText(title, w * 0.5, h * 0.35);
+      bgCtx.shadowColor = 'transparent';
+
       bgTexture.needsUpdate = true;
     }
 

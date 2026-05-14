@@ -395,17 +395,6 @@ function App() {
           transition={{ duration: 0.5 }}
         >
           <div className="hero-content">
-            <h1 style={{
-              fontFamily: "'Cinzel Decorative', cursive",
-              fontSize: 'clamp(2.2rem, 7vw, 5.5rem)',
-              fontWeight: 700,
-              color: 'white',
-              textShadow: '0 2px 40px rgba(0,80,160,0.5), 0 0 80px rgba(135,206,235,0.3)',
-              letterSpacing: '0.04em',
-              lineHeight: 1.15,
-            }}>
-              Nanako's Profile
-            </h1>
           </div>
         </motion.div>
 
@@ -487,7 +476,7 @@ function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🪸 珊瑚礁 - 明星项目</h2>
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🪸 珊瑚礁 - 项目视频</h2>
             <div className="bento-grid">
               {isLoading ? (
                 <>

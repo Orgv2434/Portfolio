@@ -9,28 +9,6 @@
   "projects": {
     "featured": [
       {
-        "id": "project-time",
-        "title": "Project-Time",
-        "description": "UE GAS 战斗策划+技术实现，完整的战斗系统架构。涉及技能系统、属性系统、效果系统的完整设计与开发。",
-        "category": "UE5 战斗系统",
-        "tags": ["UE5", "GAS", "战斗系统", "策划", "技术"],
-        "emoji": "⚔️",
-        "colors": ["#ff6b6b", "#ee5a6f"],
-        "isLarge": true,
-        "details": {
-          "role": "策划 + 技术",
-          "engine": "UE5",
-          "tools": ["Unreal Engine 5", "Visual Studio", "Perforce"],
-          "achievements": [
-            "设计完整的 GAS 战斗系统",
-            "实现技能、属性、效果系统",
-            "优化战斗性能"
-          ],
-          "demoUrl": "https://example.com/project-time",
-          "githubUrl": "https://github.com/your-name/project-time"
-        }
-      },
-      {
         "id": "dialog-box",
         "title": "某天头上长出对话框",
         "description": "UE 策划技术动画UI全栈实现，完整的对话系统。包括对话树设计、文案策划、UI交互、动画效果。完整的策划案已完成，包含详细的剧情设计和角色对话。",
@@ -39,7 +17,7 @@
         "emoji": "💬",
         "colors": ["#ffd93d", "#ffb347"],
         "isLarge": true,
-        "videoPath": "/videos/trailer.mp4",
+        "videoPath": "/videos/dialog-box.mp4",
         "details": {
           "role": "全栈",
           "engine": "UE5",
@@ -78,6 +56,7 @@
         "emoji": "🐠",
         "colors": ["#6bcf7f", "#4fc3f7"],
         "isLarge": true,
+        "videoPath": "/videos/eat-your-fish.mp4",
         "details": {
           "role": "全栈",
           "engine": "Unity",
@@ -89,6 +68,45 @@
           ],
           "demoUrl": "https://example.com/eat-fish",
           "githubUrl": "https://github.com/your-name/eat-fish"
+        }
+      },
+      {
+        "id": "town-police",
+        "title": "小镇警察",
+        "description": "完整的游戏项目宣传视频。展现从剧情、角色、美术到交互的全面设计。",
+        "category": "游戏项目",
+        "tags": ["策划", "美术", "交互", "剧情"],
+        "emoji": "🚔",
+        "colors": ["#4d96ff", "#3b82f6"],
+        "isLarge": true,
+        "videoPath": "/videos/town-police.mp4",
+        "details": {
+          "role": "全栈",
+          "tools": ["Unreal Engine 5", "Unity"],
+          "achievements": [
+            "完整的剧情和角色设计",
+            "精美的美术表现",
+            "丰富的交互系统"
+          ]
+        }
+      },
+      {
+        "id": "western-tavern",
+        "title": "西部酒馆",
+        "description": "西部主题的交互式游戏项目。结合策划、技术、美术的完整游戏体验。",
+        "category": "游戏项目",
+        "tags": ["策划", "美术", "技术", "交互"],
+        "emoji": "🤠",
+        "colors": ["#ff9844", "#ffb347"],
+        "videoPath": "/videos/western-tavern.mp4",
+        "details": {
+          "role": "全栈",
+          "tools": ["Unreal Engine 5", "Unity"],
+          "achievements": [
+            "独特的西部风格设计",
+            "沉浸式的游戏环境",
+            "丰富的 NPC 互动"
+          ]
         }
       }
     ],
