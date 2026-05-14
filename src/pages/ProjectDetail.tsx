@@ -16,7 +16,7 @@ export const ProjectDetail = ({ project, onBack, returnToSection = '首页' }: P
     <motion.div
       className="min-h-screen relative z-10 px-4 md:px-8 py-8"
       style={{ background: 'linear-gradient(to bottom, #0a1628 0%, #0d2137 40%, #134b6e 100%)' }}
-      initial={{ opacity: 0 }}
+      initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
@@ -46,9 +46,9 @@ export const ProjectDetail = ({ project, onBack, returnToSection = '首页' }: P
         {project.videoPath && (
           <motion.div
             className="my-12"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 1, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0 }}
           >
             <VideoPlayer
               videoPath={project.videoPath}

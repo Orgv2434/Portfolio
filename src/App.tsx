@@ -33,7 +33,7 @@ interface Toast {
 const navItems = [
   { id: 'home' as SectionType, icon: Home, label: '首页' },
   { id: 'info' as SectionType, icon: FolderOpen, label: '信息页' },
-  { id: 'featured' as SectionType, icon: Star, label: '明星项目' },
+  { id: 'featured' as SectionType, icon: Star, label: '项目视频' },
   { id: 'planning' as SectionType, icon: PenTool, label: '策划能力' },
   { id: 'technology' as SectionType, icon: Code, label: '技术开发' },
   { id: 'ta' as SectionType, icon: Palette, label: 'TA & 美术' },
@@ -228,14 +228,14 @@ function App() {
 
   const handleBack = () => {
     setSelectedProject(null)
-    setActiveSection(activeProjectSection)
-    activeSectionRef.current = activeProjectSection
-    setTimeout(() => {
-      const element = document.getElementById(activeProjectSection)
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    }, 0)
+    // 不触发转场动画，直接滚动回到之前的位置
+    const element = document.getElementById(activeProjectSection)
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop,
+        behavior: 'auto'
+      })
+    }
   }
 
   // 如果选中了项目，显示项目详情页
