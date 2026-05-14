@@ -228,10 +228,14 @@ function App() {
 
   const handleBack = () => {
     setSelectedProject(null)
-    const element = document.getElementById(activeProjectSection)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
+    setActiveSection(activeProjectSection)
+    activeSectionRef.current = activeProjectSection
+    setTimeout(() => {
+      const element = document.getElementById(activeProjectSection)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }, 0)
   }
 
   // 如果选中了项目，显示项目详情页
