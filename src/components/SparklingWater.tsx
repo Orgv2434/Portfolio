@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { lerpHex, hexToRgb, rgbToHsl } from '../sectionPalettes'
+import { lerpHex } from '../sectionPalettes'
 
 type Palette4 = [string, string, string, string]
 
@@ -15,7 +15,7 @@ interface SparklingWaterProps {
   durationMs?: number
 }
 
-const DEFAULT_FROM: Palette4 = ['#0a1628', '#0d2137', '#134b6e', '#1a6f9a']
+const DEFAULT_FROM: Palette4 = ['#87ceeb', '#5bb8e8', '#1565c0', '#0a1628']
 const DEFAULT_TO: Palette4 = ['#0a1628', '#124a6e', '#1a6f9a', '#2ec4b6']
 
 function smoothstep(t: number): number {
@@ -57,11 +57,11 @@ export const SparklingWater = ({
     canvas.style.zIndex = '0'
     container.appendChild(canvas)
 
-    const PARTICLE_COUNT = 150
+    const PARTICLE_COUNT = 120
     const COLS = 12
-    const minRadius = 10
-    const maxRadius = 30
-    const accel = 0.0075
+    const minRadius = 8
+    const maxRadius = 45
+    const ACCEL = 0.015
 
     type Bubble = {
       x: number
@@ -79,12 +79,12 @@ export const SparklingWater = ({
       const colW = width / COLS
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const col = i % COLS
-        const jitter = (Math.random() - 0.5) * colW * 0.42
+        const jitter = (Math.random() - 0.5) * colW * 0.55
         Bubbles.push({
           x: (col + 0.5) * colW + jitter,
-          y: reversed ? Math.random() * height : Math.random() * height,
+          y: Math.random() * height,
           r: minRadius + Math.random() * (maxRadius - minRadius),
-          speed: 2.2 + Math.random() * 5.5,
+          speed: 4 + Math.random() * 14,
           phase: Math.random() * Math.PI * 2,
           alpha: 0,
         })
@@ -131,55 +131,67 @@ export const SparklingWater = ({
       d2.fillStyle = g
       d2.fillRect(0, 0, width, height)
 
-      const mixA = lerpHex(from[1], to[1], t)
-      const mixB = lerpHex(from[2], to[2], t)
-      const mixHi = lerpHex(from[3], to[3], t)
-
-      const strokeAlpha = 0.22 + 0.32 * (1 - t * 0.85)
-
       for (let i = 0; i < Bubbles.length; i++) {
         const b = Bubbles[i]
-        const wobble = 0.5 + 0.5 * Math.sin(now * 0.0018 + b.phase)
-        const localBlend = Math.max(0, Math.min(1, t * 0.82 + wobble * 0.18 * (i % 7) * 0.07))
-        const bodyHex = lerpHex(lerpHex(mixA, mixB, localBlend), mixHi, 0.12 + (i % 5) * 0.04)
-        const { r: R, g: G, b: B } = hexToRgb(bodyHex)
-        const hsl = rgbToHsl(R, G, B)
-        const hue = hsl.h * 360 + Math.sin(b.phase + i * 0.31) * 6
-        const sat = 52 + hsl.s * 28 + t * 8
-        const light = 58 + (1 - hsl.l) * 14 + (b.y / height) * 8 * (reversed ? 1 - b.y / height : b.y / height)
 
+        // alpha：靠近起始端透明，越往运动方向越不透明，融合背景蓝色
         if (reversed) {
-          b.alpha = 0.12 + 0.42 * ((height - b.y) / height)
+          b.alpha = 0.55 * ((height - b.y) / height)
         } else {
-          b.alpha = 0.12 + 0.42 * (b.y / height)
+          b.alpha = 0.55 * (b.y / height)
         }
+        b.alpha = Math.max(0, Math.min(0.55, b.alpha))
 
-        b.speed += accel
+        // 加速上升/下降，参考海绵宝宝水中气泡效果
+        b.speed += ACCEL
 
+        // 玻璃质感气泡：径向渐变 + 光晕效果
+        const gradient = d2.createRadialGradient(
+          b.x - b.r * 0.3, b.y - b.r * 0.3, 0,
+          b.x, b.y, b.r
+        )
+        gradient.addColorStop(0, `hsla(203, 85%, 80%, ${b.alpha * 0.85})`)
+        gradient.addColorStop(0.4, `hsla(203, 75%, 69%, ${b.alpha * 0.9})`)
+        gradient.addColorStop(1, `hsla(203, 70%, 60%, ${b.alpha * 0.5})`)
+
+        d2.fillStyle = gradient
         d2.beginPath()
         d2.arc(b.x, b.y, b.r, 0, Math.PI * 2)
-        d2.fillStyle = `hsla(${hue}, ${sat}%, ${light}%, ${b.alpha * 0.92})`
         d2.fill()
-        d2.strokeStyle = `rgba(255, 255, 255, ${strokeAlpha * (0.5 + b.alpha)})`
-        d2.lineWidth = 1.1
+
+        // 外层光圈（模拟高光边框）
+        d2.strokeStyle = `rgba(255, 255, 255, ${b.alpha * 0.6})`
+        d2.lineWidth = Math.max(1, b.r * 0.15)
         d2.stroke()
 
-        if (reversed) {
-          b.y += b.speed * 0.22
-        } else {
-          b.y -= b.speed * 0.22
-        }
+        // 内部高光点
+        const highlightGrad = d2.createRadialGradient(
+          b.x - b.r * 0.25, b.y - b.r * 0.25, 0,
+          b.x - b.r * 0.25, b.y - b.r * 0.25, b.r * 0.3
+        )
+        highlightGrad.addColorStop(0, `rgba(255, 255, 255, ${b.alpha * 0.8})`)
+        highlightGrad.addColorStop(1, `rgba(255, 255, 255, 0)`)
+        d2.fillStyle = highlightGrad
+        d2.beginPath()
+        d2.arc(b.x - b.r * 0.25, b.y - b.r * 0.25, b.r * 0.3, 0, Math.PI * 2)
+        d2.fill()
 
         if (reversed) {
-          if (b.y > height + b.r) {
-            b.y = -b.r
-            b.speed = 2 + Math.random() * 5
-          }
+          b.y += b.speed
         } else {
-          if (b.y < -b.r) {
-            b.y = height + b.r
-            b.speed = 2 + Math.random() * 5
-          }
+          b.y -= b.speed
+        }
+
+        // 超出屏幕时重置到起始端
+        const colW = width / COLS
+        if (!reversed && b.y < -b.r) {
+          b.y = height + b.r
+          b.speed = 4 + Math.random() * 14
+          b.x = (Math.floor(Math.random() * COLS) + 0.5) * colW + (Math.random() - 0.5) * colW * 0.55
+        } else if (reversed && b.y > height + b.r) {
+          b.y = -b.r
+          b.speed = 4 + Math.random() * 14
+          b.x = (Math.floor(Math.random() * COLS) + 0.5) * colW + (Math.random() - 0.5) * colW * 0.55
         }
       }
 

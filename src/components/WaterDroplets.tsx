@@ -64,7 +64,7 @@ export const WaterDroplets = ({
       bgCanvas.width = w;
       bgCanvas.height = h;
 
-      const grd = bgCtx.createLinearGradient(0, 0, w * 0.6, h);
+      const grd = bgCtx.createLinearGradient(0, 0, 0, h);
       grd.addColorStop(0, workingColors[0] || "#e8dbc8");
       grd.addColorStop(0.35, workingColors[1] || "#5b8cdb");
       grd.addColorStop(0.6, workingColors[2] || "#2d6fd4");
@@ -88,31 +88,6 @@ export const WaterDroplets = ({
         bgCtx.fillRect(0, 0, w, h);
       }
       bgCtx.restore();
-
-      bgCtx.fillStyle = "#ffffff";
-      bgCtx.textAlign = "center";
-      bgCtx.textBaseline = "middle";
-
-      const titleSize = Math.min(Math.round(w * 0.08), Math.round(h * 0.15));
-      bgCtx.font = `700 ${titleSize}px 'Space Grotesk', sans-serif`;
-      
-      const maxTitleWidth = w * 0.9;
-      const titleMetrics = bgCtx.measureText(title);
-      if (titleMetrics.width > maxTitleWidth) {
-        const scale = maxTitleWidth / titleMetrics.width;
-        const scaledSize = Math.round(titleSize * scale);
-        bgCtx.font = `700 ${scaledSize}px 'Space Grotesk', sans-serif`;
-      }
-      
-      bgCtx.fillText(title, w * 0.5, h * 0.35);
-
-      if (subtitle) {
-        const subSize = Math.round(w * 0.02);
-        bgCtx.font = `500 ${subSize}px 'Space Grotesk', sans-serif`;
-        bgCtx.globalAlpha = 0.55;
-        bgCtx.fillText(subtitle, w * 0.5, h * 0.35 + titleSize * 1.5);
-        bgCtx.globalAlpha = 1;
-      }
 
       bgTexture.needsUpdate = true;
     }

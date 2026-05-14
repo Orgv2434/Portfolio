@@ -6,7 +6,7 @@ export const SECTION_PALETTES: Record<
   SectionType,
   [string, string, string, string]
 > = {
-  home: ['#0a1628', '#0d2137', '#134b6e', '#1a6f9a'],
+  home: ['#87ceeb', '#5bb8e8', '#1565c0', '#0a1628'],
   info: ['#0a1628', '#124a6e', '#1a6f9a', '#2ec4b6'],
   featured: ['#0d2137', '#1a3f6e', '#6b4c9a', '#d4a574'],
   planning: ['#0a1e2e', '#16506e', '#2a8f8f', '#3dd6c6'],

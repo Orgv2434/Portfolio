@@ -244,7 +244,7 @@ function App() {
       <div 
         className="fixed inset-0"
         style={{
-          background: 'linear-gradient(to bottom, #0a1628 0%, #0d2137 30%, #134b6e 60%, #1a6f9a 100%)',
+          background: 'linear-gradient(to bottom, #87ceeb 0%, #5bb8e8 20%, #1565c0 60%, #0a1628 100%)',
           zIndex: -1
         }}
       />
@@ -258,10 +258,10 @@ function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <WaterDroplets 
+            <WaterDroplets
               title="Nanako's Profile"
               subtitle=""
-              colors={["#0a1628", "#0d2137", "#134b6e", "#1a6f9a"]}
+              colors={["#87ceeb", "#5bb8e8", "#1565c0", "#0a1628"]}
             />
           </motion.div>
         )}
@@ -299,7 +299,7 @@ function App() {
         {isLoading && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center"
-            style={{ background: 'linear-gradient(to bottom, #0a1628 0%, #0d2137 50%, #134b6e 100%)' }}
+            style={{ background: 'linear-gradient(to bottom, #87ceeb 0%, #5bb8e8 30%, #1565c0 70%, #0a1628 100%)' }}
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
@@ -395,6 +395,17 @@ function App() {
           transition={{ duration: 0.5 }}
         >
           <div className="hero-content">
+            <h1 style={{
+              fontFamily: "'Cinzel Decorative', cursive",
+              fontSize: 'clamp(2.2rem, 7vw, 5.5rem)',
+              fontWeight: 700,
+              color: 'white',
+              textShadow: '0 2px 40px rgba(0,80,160,0.5), 0 0 80px rgba(135,206,235,0.3)',
+              letterSpacing: '0.04em',
+              lineHeight: 1.15,
+            }}>
+              Nanako's Profile
+            </h1>
           </div>
         </motion.div>
 
@@ -407,18 +418,6 @@ function App() {
             animate={{ opacity: depth > 200 ? 1 : 1 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="relative w-full max-w-4xl mx-auto mb-8">
-              <WaterDroplets 
-                title="Nanako's Profile"
-                subtitle="游戏开发 | 技术策划 | TA"
-                colors={["#0a1628", "#0d2137", "#134b6e", "#1a6f9a", "#2ec4b6"]}
-              />
-            </div>
-            <div className="text-center mt-8">
-              <p className="text-white/80 text-lg leading-relaxed max-w-2xl mx-auto">
-                探索海洋深处的数字世界，发现无限可能
-              </p>
-            </div>
           </motion.div>
 
           <motion.div
