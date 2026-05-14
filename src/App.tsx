@@ -1,15 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Home, 
-  FolderOpen, 
+import {
+  Home,
+  FolderOpen,
   Star,
-  PenTool, 
-  Code, 
-  Palette, 
-  Brain, 
-  BookOpen, 
-  ExternalLink,
+  PenTool,
+  Code,
+  Palette,
+  Brain,
   Github as GithubIcon,
   Mail,
   Linkedin
@@ -22,7 +20,9 @@ import { DepthIndicator } from './components/DepthIndicator'
 import { ScrollHint } from './components/ScrollHint'
 import { BentoCard } from './components/BentoCard'
 import { SkeletonCard } from './components/SkeletonCard'
+import { SkillGrid } from './components/SkillGrid'
 import { SECTION_PALETTES, type SectionType } from './sectionPalettes'
+import type { Project } from './types'
 
 interface Toast {
   id: number
@@ -39,33 +39,6 @@ const navItems = [
   { id: 'ta' as SectionType, icon: Palette, label: 'TA & 美术' },
   { id: 'ai' as SectionType, icon: Brain, label: 'AI 应用' },
 ]
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  emoji: string;
-  colors: string[];
-  category?: string;
-  isLarge?: boolean;
-  videoPath?: string;
-  details?: {
-    role?: string;
-    engine?: string;
-    tools?: string[];
-    achievements?: string[];
-    demoUrl?: string;
-    githubUrl?: string;
-    documentUrl?: string;
-    overview?: string;
-    story?: string;
-    features?: string[];
-    techDetails?: string[];
-  };
-  skills?: string[];
-  topics?: string[];
-}
 
 function App() {
   const [activeSection, setActiveSection] = useState<SectionType>('home')
@@ -325,17 +298,18 @@ function App() {
       <AnimatePresence>
         {isLoading && (
           <motion.div
-            className="fixed inset-0 bg-white z-50 flex items-center justify-center"
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{ background: 'linear-gradient(to bottom, #0a1628 0%, #0d2137 50%, #134b6e 100%)' }}
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
             <motion.div
-              className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full"
+              className="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full"
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-            ></motion.div>
-            <p className="absolute bottom-1/4 text-gray-500">加载中...</p>
+            />
+            <p className="absolute bottom-1/4 text-white/60">正在下潜...</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -514,7 +488,7 @@ function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>⭐ 明星项目</h2>
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🪸 珊瑚礁 - 明星项目</h2>
             <div className="bento-grid">
               {isLoading ? (
                 <>
@@ -538,7 +512,7 @@ function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🪸 珊瑚礁 - 策划能力</h2>
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🦑 深海平原 - 策划能力</h2>
             <div className="bento-grid">
               {isLoading ? (
                 <>
@@ -551,17 +525,7 @@ function App() {
                 ))
               )}
             </div>
-            <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
-              <h3 className="text-xl font-bold mb-6 text-white/90">策划技能</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {data.skills.planning.map((skill, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-                    <span className="text-2xl">📋</span>
-                    <span className="font-medium text-white">{skill}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <SkillGrid skills={data.skills.planning} emoji="📋" />
           </motion.div>
 
           <motion.div
@@ -572,7 +536,7 @@ function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🦑 深海平原 - 技术开发</h2>
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🌡️ 热泉喷口 - 技术开发</h2>
             <div className="bento-grid">
               {isLoading ? (
                 <>
@@ -586,17 +550,7 @@ function App() {
                 </>
               )}
             </div>
-            <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
-              <h3 className="text-xl font-bold mb-6 text-white/90">编程技能</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {data.skills.programming.map((skill, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-                    <span className="text-2xl">💻</span>
-                    <span className="font-medium text-white">{skill}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <SkillGrid skills={data.skills.programming} emoji="💻" />
           </motion.div>
 
           <motion.div
@@ -607,7 +561,7 @@ function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🌋 热泉喷口 - TA & 美术技术</h2>
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🕳️ 深渊 - TA & 美术技术</h2>
             <div className="bento-grid">
               {isLoading ? (
                 <SkeletonCard isLarge />
@@ -615,17 +569,7 @@ function App() {
                 <BentoCard onClick={handleProjectClick} key="visual-effects" project={data.projects.technology[1]} isLarge />
               )}
             </div>
-            <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
-              <h3 className="text-xl font-bold mb-6 text-white/90">TA 技能</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {data.skills.ta.map((skill, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-                    <span className="text-2xl">🎨</span>
-                    <span className="font-medium text-white">{skill}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <SkillGrid skills={data.skills.ta} emoji="🎨" />
           </motion.div>
 
           <motion.div
@@ -636,7 +580,7 @@ function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>👾 深渊 - AI 应用</h2>
+            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🌀 海沟 - AI 应用</h2>
             <div className="bento-grid">
               {isLoading ? (
                 <SkeletonCard isLarge />
@@ -644,17 +588,7 @@ function App() {
                 <BentoCard onClick={handleProjectClick} key="ai-integration" project={data.projects.ai[0]} isLarge />
               )}
             </div>
-            <div className="glass rounded-3xl p-8 mt-8 backdrop-blur-md">
-              <h3 className="text-xl font-bold mb-6 text-white/90">AI 技能</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {data.skills.ai.map((skill, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-                    <span className="text-2xl">🧠</span>
-                    <span className="font-medium text-white">{skill}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <SkillGrid skills={data.skills.ai} emoji="🧠" />
           </motion.div>
         </>
 

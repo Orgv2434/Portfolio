@@ -3,30 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import { VideoPlayer } from '../components/ProjectDetail/VideoPlayer';
 import { ProjectInfo } from '../components/ProjectDetail/ProjectInfo';
 import { WaterDroplets } from '../components/WaterDroplets';
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  category?: string;
-  tags: string[];
-  emoji: string;
-  colors: string[];
-  videoPath?: string;
-  details?: {
-    role?: string;
-    engine?: string;
-    tools?: string[];
-    achievements?: string[];
-    demoUrl?: string;
-    githubUrl?: string;
-    documentUrl?: string;
-    overview?: string;
-    story?: string;
-    features?: string[];
-    techDetails?: string[];
-  };
-}
+import type { Project } from '../types';
 
 interface ProjectDetailProps {
   project: Project;
@@ -36,21 +13,22 @@ interface ProjectDetailProps {
 export const ProjectDetail = ({ project, onBack }: ProjectDetailProps) => {
   return (
     <motion.div
-      className="min-h-screen bg-gray-50 relative z-10 px-4 md:px-8 py-8"
+      className="min-h-screen relative z-10 px-4 md:px-8 py-8"
+      style={{ background: 'linear-gradient(to bottom, #0a1628 0%, #0d2137 40%, #134b6e 100%)' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
       {/* 水滴效果背景 */}
-      <WaterDroplets 
+      <WaterDroplets
         title={project.title}
         subtitle={project.description}
         colors={project.colors}
       />
-      
+
       {/* 返回按钮 */}
       <motion.button
-        className="fixed top-4 left-4 md:left-8 z-50 flex items-center gap-2 px-4 py-2 glass rounded-full text-gray-700 hover:text-gray-900 transition"
+        className="fixed top-4 left-4 md:left-8 z-50 flex items-center gap-2 px-4 py-2 glass rounded-full text-white/80 hover:text-white transition"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={onBack}
@@ -64,7 +42,6 @@ export const ProjectDetail = ({ project, onBack }: ProjectDetailProps) => {
 
       {/* 主要内容区域 */}
       <div className="max-w-5xl mx-auto">
-        {/* 视频播放器 - 居中显示 */}
         {project.videoPath && (
           <motion.div
             className="my-12"
@@ -80,7 +57,6 @@ export const ProjectDetail = ({ project, onBack }: ProjectDetailProps) => {
           </motion.div>
         )}
 
-        {/* 项目信息 */}
         <ProjectInfo
           title={project.title}
           description={project.description}
@@ -92,8 +68,7 @@ export const ProjectDetail = ({ project, onBack }: ProjectDetailProps) => {
         />
       </div>
 
-      {/* 页脚 */}
-      <footer className="py-8 text-center text-gray-500 text-sm mt-12">
+      <footer className="py-8 text-center text-white/40 text-sm mt-12">
         <p>© 2024 游戏专业作品集</p>
       </footer>
     </motion.div>

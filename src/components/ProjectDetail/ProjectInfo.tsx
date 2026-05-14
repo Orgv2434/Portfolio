@@ -1,19 +1,6 @@
 import { motion } from 'framer-motion';
 import { ExternalLink, Github as GithubIcon, BookOpen, Award, Wrench, Cpu } from 'lucide-react';
-
-interface ProjectDetails {
-  role?: string;
-  engine?: string;
-  tools?: string[];
-  achievements?: string[];
-  demoUrl?: string;
-  githubUrl?: string;
-  documentUrl?: string;
-  overview?: string;
-  story?: string;
-  features?: string[];
-  techDetails?: string[];
-}
+import type { ProjectDetails } from '../../types';
 
 interface ProjectInfoProps {
   title: string;
@@ -47,42 +34,34 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
             <div className="flex items-start gap-6">
               <div
                 className="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0"
-                style={{
-                  background: `linear-gradient(135deg, ${colors[0]}, ${colors[1]})`,
-                }}
+                style={{ background: `linear-gradient(135deg, ${colors[0]}, ${colors[1]})` }}
               >
                 {emoji}
               </div>
               <div>
                 {category && (
                   <span
-                    className="inline-block px-3 py-1 rounded-full text-sm font-medium mb-2"
-                    style={{
-                      background: `${colors[0]}20`,
-                      color: colors[0],
-                    }}
+                    className="inline-block px-3 py-1 rounded-full text-sm font-medium mb-2 text-white/80"
+                    style={{ background: 'rgba(0, 212, 255, 0.2)', border: '1px solid rgba(0, 212, 255, 0.3)' }}
                   >
                     {category}
                   </span>
                 )}
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                   {title}
                 </h2>
-                <p className="text-gray-600 text-lg leading-relaxed">
+                <p className="text-white/70 text-lg leading-relaxed">
                   {description}
                 </p>
               </div>
             </div>
-            
+
             <div className="flex flex-wrap gap-2 mt-6">
               {tags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className="px-3 py-1 rounded-full text-sm"
-                  style={{
-                    background: `${colors[0]}15`,
-                    color: colors[0],
-                  }}
+                  className="px-3 py-1 rounded-full text-sm text-white/80"
+                  style={{ background: 'rgba(0, 212, 255, 0.15)', border: '1px solid rgba(0, 212, 255, 0.25)' }}
                 >
                   {tag}
                 </span>
@@ -96,9 +75,6 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
       {details.story && (
         <motion.section
           className="py-16 px-4 md:px-8"
-          style={{
-            background: `linear-gradient(135deg, ${colors[0]}10, ${colors[1]}10)`,
-          }}
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -106,7 +82,7 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
         >
           <div className="max-w-4xl mx-auto">
             <motion.h3
-              className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+              className="text-2xl font-bold text-white mb-6 flex items-center gap-2"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -121,9 +97,7 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <p className="text-gray-600 text-lg leading-relaxed">
-                {details.story}
-              </p>
+              <p className="text-white/70 text-lg leading-relaxed">{details.story}</p>
             </motion.div>
           </div>
         </motion.section>
@@ -140,7 +114,7 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
         >
           <div className="max-w-4xl mx-auto">
             <motion.h3
-              className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+              className="text-2xl font-bold text-white mb-6 flex items-center gap-2"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -161,13 +135,11 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                 >
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{
-                      background: `linear-gradient(135deg, ${colors[0]}, ${colors[1]})`,
-                    }}
+                    style={{ background: `linear-gradient(135deg, ${colors[0]}, ${colors[1]})` }}
                   >
                     <span className="text-white font-bold">{idx + 1}</span>
                   </div>
-                  <p className="text-gray-700 font-medium">{feature}</p>
+                  <p className="text-white/80 font-medium">{feature}</p>
                 </motion.div>
               ))}
             </div>
@@ -179,9 +151,6 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
       {details.techDetails && details.techDetails.length > 0 && (
         <motion.section
           className="py-16 px-4 md:px-8"
-          style={{
-            background: `linear-gradient(135deg, ${colors[1]}10, ${colors[0]}10)`,
-          }}
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -189,12 +158,12 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
         >
           <div className="max-w-4xl mx-auto">
             <motion.h3
-              className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+              className="text-2xl font-bold text-white mb-6 flex items-center gap-2"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <Cpu size={28} />
+              <Cpu size={28} className="text-cyan-400" />
               技术实现
             </motion.h3>
             <div className="glass rounded-2xl p-6 md:p-8">
@@ -208,11 +177,8 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                     viewport={{ once: true }}
                     transition={{ duration: 0.3, delay: idx * 0.1 }}
                   >
-                    <div
-                      className="w-2 h-2 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: colors[0] }}
-                    />
-                    <span className="text-gray-600">{tech}</span>
+                    <div className="w-2 h-2 rounded-full flex-shrink-0 bg-cyan-400" />
+                    <span className="text-white/70">{tech}</span>
                   </motion.div>
                 ))}
               </div>
@@ -231,16 +197,15 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
       >
         <div className="max-w-4xl mx-auto">
           <motion.h3
-            className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+            className="text-2xl font-bold text-white mb-6 flex items-center gap-2"
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <Wrench size={28} />
+            <Wrench size={28} className="text-cyan-400" />
             项目信息
           </motion.h3>
           <div className="grid md:grid-cols-2 gap-6">
-            {/* 角色与引擎 */}
             <motion.div
               className="glass rounded-2xl p-6"
               initial={{ opacity: 0, y: 20 }}
@@ -251,20 +216,19 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
               <div className="space-y-4">
                 {details.role && (
                   <div>
-                    <span className="text-sm text-gray-500">角色</span>
-                    <p className="text-lg font-bold text-gray-800">{details.role}</p>
+                    <span className="text-sm text-white/50">角色</span>
+                    <p className="text-lg font-bold text-white">{details.role}</p>
                   </div>
                 )}
                 {details.engine && (
                   <div>
-                    <span className="text-sm text-gray-500">引擎</span>
-                    <p className="text-lg font-bold text-gray-800">{details.engine}</p>
+                    <span className="text-sm text-white/50">引擎</span>
+                    <p className="text-lg font-bold text-white">{details.engine}</p>
                   </div>
                 )}
               </div>
             </motion.div>
 
-            {/* 工具 */}
             {details.tools && details.tools.length > 0 && (
               <motion.div
                 className="glass rounded-2xl p-6"
@@ -273,12 +237,12 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: 0.1 }}
               >
-                <span className="text-sm text-gray-500">使用工具</span>
+                <span className="text-sm text-white/50">使用工具</span>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {details.tools.map((tool, idx) => (
                     <span
                       key={idx}
-                      className="px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700"
+                      className="px-3 py-1 rounded-full text-sm bg-white/10 text-white/80"
                     >
                       {tool}
                     </span>
@@ -294,9 +258,6 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
       {details.achievements && details.achievements.length > 0 && (
         <motion.section
           className="py-16 px-4 md:px-8"
-          style={{
-            background: `linear-gradient(135deg, ${colors[0]}15, ${colors[1]}15)`,
-          }}
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -304,12 +265,12 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
         >
           <div className="max-w-4xl mx-auto">
             <motion.h3
-              className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+              className="text-2xl font-bold text-white mb-6 flex items-center gap-2"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <Award size={28} />
+              <Award size={28} className="text-cyan-400" />
               项目成就
             </motion.h3>
             <div className="glass rounded-2xl p-6 md:p-8">
@@ -317,14 +278,14 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                 {details.achievements.map((achievement, idx) => (
                   <motion.div
                     key={idx}
-                    className="flex items-center gap-3 p-4 bg-white/50 rounded-xl"
+                    className="flex items-center gap-3 p-4 bg-white/10 rounded-xl"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.3, delay: idx * 0.1 }}
                   >
                     <span className="text-xl">✅</span>
-                    <span className="text-gray-700">{achievement}</span>
+                    <span className="text-white/80">{achievement}</span>
                   </motion.div>
                 ))}
               </div>
@@ -344,12 +305,12 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
         >
           <div className="max-w-4xl mx-auto">
             <motion.h3
-              className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+              className="text-2xl font-bold text-white mb-6 flex items-center gap-2"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <BookOpen size={28} />
+              <BookOpen size={28} className="text-cyan-400" />
               相关资源
             </motion.h3>
             <div className="flex flex-wrap gap-4 justify-center">
@@ -359,9 +320,7 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-6 py-3 rounded-full font-medium text-white"
-                  style={{
-                    background: `linear-gradient(135deg, ${colors[0]}, ${colors[1]})`,
-                  }}
+                  style={{ background: `linear-gradient(135deg, ${colors[0]}, ${colors[1]})` }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: 20 }}
@@ -378,7 +337,7 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                   href={details.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 rounded-full font-medium bg-gray-800 text-white hover:bg-gray-700 transition"
+                  className="flex items-center gap-2 px-6 py-3 rounded-full font-medium bg-white/10 text-white hover:bg-white/20 transition border border-white/20"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: 20 }}
@@ -395,11 +354,7 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                   href={details.documentUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 rounded-full font-medium"
-                  style={{
-                    background: `${colors[0]}20`,
-                    color: colors[0],
-                  }}
+                  className="flex items-center gap-2 px-6 py-3 rounded-full font-medium text-cyan-400 hover:text-cyan-300 transition border border-cyan-400/30 hover:border-cyan-300/50"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: 20 }}

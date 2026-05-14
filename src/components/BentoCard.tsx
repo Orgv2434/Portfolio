@@ -1,33 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ExternalLink } from 'lucide-react'
-
-interface Project {
-  id: string
-  title: string
-  description: string
-  tags: string[]
-  emoji: string
-  colors: string[]
-  category?: string
-  isLarge?: boolean
-  videoPath?: string
-  details?: {
-    role?: string
-    engine?: string
-    tools?: string[]
-    achievements?: string[]
-    demoUrl?: string
-    githubUrl?: string
-    documentUrl?: string
-    overview?: string
-    story?: string
-    features?: string[]
-    techDetails?: string[]
-  }
-  skills?: string[]
-  topics?: string[]
-}
+import type { Project } from '../types'
 
 interface BentoCardProps {
   project: Project
