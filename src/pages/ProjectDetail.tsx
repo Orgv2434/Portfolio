@@ -8,9 +8,10 @@ import type { Project } from '../types';
 interface ProjectDetailProps {
   project: Project;
   onBack: () => void;
+  returnToSection?: string;
 }
 
-export const ProjectDetail = ({ project, onBack }: ProjectDetailProps) => {
+export const ProjectDetail = ({ project, onBack, returnToSection = '首页' }: ProjectDetailProps) => {
   return (
     <motion.div
       className="min-h-screen relative z-10 px-4 md:px-8 py-8"
@@ -37,7 +38,7 @@ export const ProjectDetail = ({ project, onBack }: ProjectDetailProps) => {
         transition={{ delay: 0.3 }}
       >
         <ArrowLeft size={18} />
-        <span>返回首页</span>
+        <span>返回{returnToSection}</span>
       </motion.button>
 
       {/* 主要内容区域 */}

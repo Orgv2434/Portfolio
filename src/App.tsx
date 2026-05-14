@@ -45,6 +45,7 @@ function App() {
   const [toasts, setToasts] = useState<Toast[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [activeProjectSection, setActiveProjectSection] = useState<SectionType>('home')
   const [depth, setDepth] = useState(0)
   const [showScrollHint, setShowScrollHint] = useState(true)
   const [showSidebar, setShowSidebar] = useState(false)
@@ -221,19 +222,34 @@ function App() {
   const handleProjectClick = (project: Project) => {
     showToast(`已打开项目: ${project.title}`, 'info')
     setSelectedProject(project)
+    setActiveProjectSection(activeSectionRef.current)
     window.scrollTo(0, 0)
   }
 
   const handleBack = () => {
     setSelectedProject(null)
+    const element = document.getElementById(activeProjectSection)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
   }
 
   // 如果选中了项目，显示项目详情页
   if (selectedProject) {
+    const sectionNames: Record<SectionType, string> = {
+      home: '首页',
+      info: '浅海',
+      featured: '珊瑚礁',
+      planning: '深海平原',
+      technology: '热泉喷口',
+      ta: '深渊',
+      ai: '海沟'
+    }
     return (
-      <ProjectDetail 
-        project={selectedProject} 
-        onBack={handleBack} 
+      <ProjectDetail
+        project={selectedProject}
+        onBack={handleBack}
+        returnToSection={sectionNames[activeProjectSection]}
       />
     )
   }

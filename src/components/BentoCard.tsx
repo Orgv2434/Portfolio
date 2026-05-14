@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ExternalLink } from 'lucide-react'
 import type { Project } from '../types'
@@ -11,6 +11,35 @@ interface BentoCardProps {
 
 export const BentoCard = ({ project, isLarge, onClick }: BentoCardProps) => {
   const [isHovered, setIsHovered] = useState(false)
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    if (!project.videoPath) return
+
+    const video = document.createElement('video')
+    video.crossOrigin = 'anonymous'
+    video.src = project.videoPath
+
+    const extractThumbnail = () => {
+      try {
+        const canvas = document.createElement('canvas')
+        canvas.width = video.videoWidth
+        canvas.height = video.videoHeight
+        const ctx = canvas.getContext('2d')
+        if (ctx) {
+          ctx.drawImage(video, 0, 0)
+          setThumbnailUrl(canvas.toDataURL('image/jpeg', 0.8))
+        }
+      } catch (error) {
+        console.error('Failed to extract thumbnail:', error)
+      }
+      video.removeEventListener('loadeddata', extractThumbnail)
+    }
+
+    video.addEventListener('loadeddata', extractThumbnail, { once: true })
+    video.load()
+  }, [project.videoPath])
 
   return (
     <motion.div
@@ -26,12 +55,23 @@ export const BentoCard = ({ project, isLarge, onClick }: BentoCardProps) => {
       style={{ padding: '1.5rem' }}
     >
       <div
-        className={`bento-image ${isLarge ? 'bento-image-large' : 'bento-image-normal'}`}
+        className={`bento-image ${isLarge ? 'bento-image-large' : 'bento-image-normal'} relative overflow-hidden`}
         style={{
-          background: `linear-gradient(135deg, ${project.colors[0]}, ${project.colors[1]})`,
+          background: thumbnailUrl
+            ? `url(${thumbnailUrl}) center / cover`
+            : `linear-gradient(135deg, ${project.colors[0]}, ${project.colors[1]})`,
         }}
       >
-        {project.emoji}
+        {!thumbnailUrl && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            {project.emoji}
+          </div>
+        )}
+        {thumbnailUrl && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 hover:opacity-100 transition-opacity duration-300">
+            <span className="text-white text-3xl md:text-4xl">{project.emoji}</span>
+          </div>
+        )}
       </div>
       <h3 className="bento-title">{project.title}</h3>
       <p className="bento-description">{project.description}</p>

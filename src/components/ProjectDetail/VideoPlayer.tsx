@@ -14,8 +14,12 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
   const [showControls, setShowControls] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isDraggingProgress, setIsDraggingProgress] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowControls(false), 3000);
@@ -66,6 +70,42 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
     setIsLoading(false);
   };
 
+  const handleTimeUpdate = () => {
+    if (videoRef.current && !isDraggingProgress) {
+      setCurrentTime(videoRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      setDuration(videoRef.current.duration);
+    }
+  };
+
+  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!progressRef.current || !videoRef.current) return;
+    const rect = progressRef.current.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    const newTime = percent * duration;
+    videoRef.current.currentTime = Math.max(0, Math.min(newTime, duration));
+    setCurrentTime(newTime);
+  };
+
+  const handleProgressMouseDown = () => {
+    setIsDraggingProgress(true);
+  };
+
+  const handleProgressMouseUp = () => {
+    setIsDraggingProgress(false);
+  };
+
+  const formatTime = (seconds: number) => {
+    if (!seconds || isNaN(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   return (
     <motion.div
       ref={containerRef}
@@ -98,6 +138,8 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onLoadedData={handleLoadedData}
+        onLoadedMetadata={handleLoadedMetadata}
+        onTimeUpdate={handleTimeUpdate}
         onError={handleError}
       >
         <source src={videoPath} type="video/mp4" />
@@ -168,6 +210,37 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
           <Play size={40} className="text-white ml-1" fill="white" />
         </motion.button>
       </motion.div>
+
+      {/* 进度条 */}
+      <div
+        ref={progressRef}
+        className="absolute bottom-16 left-0 right-0 h-1 bg-white/20 cursor-pointer group"
+        onClick={handleProgressClick}
+        onMouseDown={handleProgressMouseDown}
+        onMouseUp={handleProgressMouseUp}
+        onMouseLeave={handleProgressMouseUp}
+      >
+        <div
+          className="h-full bg-white transition-all"
+          style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
+        />
+        <div
+          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{ left: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
+        />
+      </div>
+
+      {/* 时间显示 */}
+      {showControls && (
+        <motion.div
+          className="absolute bottom-20 right-4 text-white text-sm font-medium"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          {formatTime(currentTime)} / {formatTime(duration)}
+        </motion.div>
+      )}
 
       {/* 控制栏 */}
       <motion.div
