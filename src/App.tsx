@@ -18,6 +18,7 @@ import { WaterDroplets } from './components/WaterDroplets'
 import { SparklingWater } from './components/SparklingWater'
 import { DepthIndicator } from './components/DepthIndicator'
 import { ScrollHint } from './components/ScrollHint'
+import { SkillTree } from './components/SkillTree'
 import { BentoCard } from './components/BentoCard'
 import { SkeletonCard } from './components/SkeletonCard'
 import { SkillGrid } from './components/SkillGrid'
@@ -507,42 +508,53 @@ function App() {
               </div>
             </div>
 
-            <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
-              <h3 className="text-xl font-bold mb-6 text-white/90">核心能力</h3>
+            <div className="mb-8">
+              <h3 className="text-xl font-bold mb-6 text-white/90">核心能力技能树</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* 编程能力 */}
-                <div>
-                  <h4 className="text-sm font-semibold text-blue-300 mb-3">编程</h4>
-                  <div className="space-y-2">
-                    {data.skills.programming.map((skill, idx) => (
-                      <div key={idx} className="px-3 py-2 bg-white/10 text-white rounded-lg text-sm backdrop-blur-sm border-l-2 border-blue-400">
-                        {skill}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {/* 图形学能力 */}
-                <div>
-                  <h4 className="text-sm font-semibold text-purple-300 mb-3">图形学</h4>
-                  <div className="space-y-2">
-                    {data.skills.graphics.map((skill, idx) => (
-                      <div key={idx} className="px-3 py-2 bg-white/10 text-white rounded-lg text-sm backdrop-blur-sm border-l-2 border-purple-400">
-                        {skill}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {/* 引擎和策划 */}
-                <div>
-                  <h4 className="text-sm font-semibold text-cyan-300 mb-3">引擎 & 策划</h4>
-                  <div className="space-y-2">
-                    {[...data.skills.engine, ...data.skills.planning].map((skill, idx) => (
-                      <div key={idx} className="px-3 py-2 bg-white/10 text-white rounded-lg text-sm backdrop-blur-sm border-l-2 border-cyan-400">
-                        {skill}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                {/* 编程技能树 */}
+                <SkillTree
+                  category="编程"
+                  color="#64B5FF"
+                  nodes={[
+                    { name: 'C/C++\n数据结构与算法', level: 'basic', x: 150, y: 50 },
+                    { name: 'C# (Unity)', level: 'intermediate', x: 80, y: 150 },
+                    { name: '蓝图脚本 (UE)', level: 'intermediate', x: 150, y: 150 },
+                    { name: '性能优化', level: 'advanced', x: 80, y: 280 },
+                    { name: '网络编程', level: 'advanced', x: 220, y: 280 }
+                  ]}
+                  connections={[[0, 1], [0, 2], [1, 3], [2, 4]]}
+                />
+
+                {/* 图形学技能树 */}
+                <SkillTree
+                  category="图形学"
+                  color="#A78BFA"
+                  nodes={[
+                    { name: 'Games101\n计算机图形学', level: 'basic', x: 150, y: 50 },
+                    { name: 'Unity Shader\n编程', level: 'intermediate', x: 80, y: 150 },
+                    { name: '粒子效果\n系统', level: 'intermediate', x: 150, y: 150 },
+                    { name: '渲染\n管线', level: 'advanced', x: 80, y: 280 },
+                    { name: 'UI系统\n设计', level: 'advanced', x: 220, y: 280 }
+                  ]}
+                  connections={[[0, 1], [0, 2], [1, 3], [2, 4]]}
+                />
+
+                {/* 引擎 & 策划技能树 */}
+                <SkillTree
+                  category="引擎 & 策划"
+                  color="#4DD9FF"
+                  nodes={[
+                    { name: 'UE GAS\nGameplay\nAbility System', level: 'basic', x: 70, y: 50 },
+                    { name: 'ALS\nAdvanced\nLocomotion', level: 'basic', x: 230, y: 50 },
+                    { name: '动画\n系统', level: 'intermediate', x: 100, y: 150 },
+                    { name: '状态\n机', level: 'intermediate', x: 150, y: 150 },
+                    { name: '事件\n系统', level: 'intermediate', x: 200, y: 150 },
+                    { name: '战斗\n策划', level: 'advanced', x: 60, y: 280 },
+                    { name: '玩法\n策划', level: 'advanced', x: 150, y: 280 },
+                    { name: '系统\n设计', level: 'advanced', x: 240, y: 280 }
+                  ]}
+                  connections={[[0, 2], [0, 3], [1, 4], [2, 5], [3, 6], [4, 7]]}
+                />
               </div>
             </div>
 
