@@ -500,24 +500,49 @@ function App() {
             
             <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
               <h3 className="text-xl font-bold mb-6 text-white/90">关于我</h3>
-              <p className="text-white/80 leading-relaxed text-lg">
-                {data.profile.bio}
-              </p>
+              <div className="text-white/80 leading-relaxed text-lg space-y-4">
+                {data.profile.bio.split('\n').map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
+              </div>
             </div>
 
             <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
               <h3 className="text-xl font-bold mb-6 text-white/90">核心能力</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {[
-                  ...data.skills.programming,
-                  ...data.skills.graphics,
-                  ...data.skills.engine,
-                  ...data.skills.planning
-                ].slice(0, 12).map((skill, idx) => (
-                  <span key={idx} className="px-4 py-2 bg-white/10 text-white rounded-full text-sm backdrop-blur-sm">
-                    {skill}
-                  </span>
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* 编程能力 */}
+                <div>
+                  <h4 className="text-sm font-semibold text-blue-300 mb-3">编程</h4>
+                  <div className="space-y-2">
+                    {data.skills.programming.map((skill, idx) => (
+                      <div key={idx} className="px-3 py-2 bg-white/10 text-white rounded-lg text-sm backdrop-blur-sm border-l-2 border-blue-400">
+                        {skill}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* 图形学能力 */}
+                <div>
+                  <h4 className="text-sm font-semibold text-purple-300 mb-3">图形学</h4>
+                  <div className="space-y-2">
+                    {data.skills.graphics.map((skill, idx) => (
+                      <div key={idx} className="px-3 py-2 bg-white/10 text-white rounded-lg text-sm backdrop-blur-sm border-l-2 border-purple-400">
+                        {skill}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* 引擎和策划 */}
+                <div>
+                  <h4 className="text-sm font-semibold text-cyan-300 mb-3">引擎 & 策划</h4>
+                  <div className="space-y-2">
+                    {[...data.skills.engine, ...data.skills.planning].map((skill, idx) => (
+                      <div key={idx} className="px-3 py-2 bg-white/10 text-white rounded-lg text-sm backdrop-blur-sm border-l-2 border-cyan-400">
+                        {skill}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 
