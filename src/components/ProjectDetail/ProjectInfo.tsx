@@ -14,7 +14,7 @@ interface ProjectInfoProps {
 
 export const ProjectInfo = ({ title, description, category, tags, emoji, colors, details = {} }: ProjectInfoProps) => {
   return (
-    <div className="min-h-screen">
+    <div>
       {/* 项目概览 */}
       <motion.section
         className="py-16 px-4 md:px-8"
@@ -299,9 +299,8 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
         <motion.section
           className="py-16 px-4 md:px-8"
           initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
         >
           <div className="max-w-4xl mx-auto">
             <motion.h3
@@ -313,20 +312,19 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
               <BookOpen size={28} className="text-cyan-400" />
               相关资源
             </motion.h3>
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="flex flex-wrap gap-4 justify-center items-center pt-8">
               {details.demoUrl && (
                 <motion.a
                   href={details.demoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 rounded-full font-medium text-white"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium text-white whitespace-nowrap"
                   style={{ background: `linear-gradient(135deg, ${colors[0]}, ${colors[1]})` }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0 }}
                 >
                   <ExternalLink size={18} />
                   在线演示
@@ -337,13 +335,12 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                   href={details.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 rounded-full font-medium bg-white/10 text-white hover:bg-white/20 transition border border-white/20"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium bg-white/10 text-white hover:bg-white/20 transition border border-white/20 whitespace-nowrap"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.1 }}
                 >
                   <GithubIcon size={18} />
                   GitHub
@@ -354,13 +351,12 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                   href={details.documentUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 rounded-full font-medium text-cyan-400 hover:text-cyan-300 transition border border-cyan-400/30 hover:border-cyan-300/50"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium text-cyan-400 hover:text-cyan-300 transition border border-cyan-400/30 hover:border-cyan-300/50 whitespace-nowrap"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: 0.2 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
                 >
                   <BookOpen size={18} />
                   详细文档

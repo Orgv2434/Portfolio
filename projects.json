@@ -30,7 +30,7 @@
             "实现分支对话和剧情选择功能"
           ],
           "demoUrl": "https://x020k2esgn2.feishu.cn/wiki/QOkiwMKSkiKbZFk0qjicuxuEn5d?from=from_copylink",
-          "githubUrl": "https://github.com/your-name/dialog-box",
+          "githubUrl": "https://github.com/Orgv2434/dialog-box",
           "documentUrl": "https://x020k2esgn2.feishu.cn/wiki/QOkiwMKSkiKbZFk0qjicuxuEn5d?from=from_copylink",
           "overview": "《某天头上长出对话框》是一款基于 UE5 引擎开发的叙事驱动型游戏项目。玩家将扮演一位突然获得与世界对话能力的主角，通过与各种物品、NPC 的对话来解开谜题、推进剧情。",
           "story": "故事发生在一个平凡的小镇，主角某天醒来发现自己能看到漂浮在人们和物品上方的对话框。这些对话框显示着他们的真实想法和隐藏的故事。随着探索的深入，主角逐渐发现这个能力背后隐藏着一个关于小镇历史的巨大秘密。",
@@ -69,7 +69,7 @@
             "UI 和动画制作"
           ],
           "demoUrl": "https://example.com/eat-fish",
-          "githubUrl": "https://github.com/your-name/eat-fish"
+          "githubUrl": "https://github.com/Orgv2434/eat-fish"
         }
       },
       {
@@ -264,7 +264,7 @@
   ],
   "social": {
     "email": "2569758095@qq.com",
-    "github": "https://github.com/your-username",
+    "github": "https://github.com/Orgv2434",
     "linkedin": "https://linkedin.com/in/your-profile",
     "wechat": "your-wechat"
   },

@@ -11,7 +11,22 @@
       "Bash(cp \"D:\\\\000_收集箱\\\\作品集\\\\作品视频\\\\某天头上长出了对话框\\\\宣传视频.mp4\" ./dialog-box.mp4)",
       "Bash(cp \"D:\\\\000_收集箱\\\\作品集\\\\作品视频\\\\西部酒馆\\\\实机录制视频.mp4\" ./western-tavern.mp4)",
       "Bash(git commit -m '彻底修复返回功能：立即锁定+强制停止转场+双rAF滚动 *)",
-      "Bash(git commit -m '最终修复：用 returnToScrollYRef 记录确切滚动位置而非 section *)"
+      "Bash(git commit -m '最终修复：用 returnToScrollYRef 记录确切滚动位置而非 section *)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(cd \"D:\\\\000_收集箱\\\\作品集\\\\网站\" && grep -n \"Tassos\\\\|tassos\" projects.json)",
+      "Bash(git commit -m '添加外部视频链接支持，Tassos项目可以正确显示点击打开视频按钮 *)",
+      "Bash(git commit -m '添加Tassos项目到项目列表 *)",
+      "Bash(npm run *)",
+      "Bash(cp 'D:\\\\000_收集箱\\\\作品集\\\\作品视频\\\\某天头上长出了对话框\\\\封面.png' 'D:\\\\000_收集箱\\\\作品集\\\\网站\\\\public\\\\covers\\\\dialog-box.png')",
+      "Bash(cp 'D:\\\\000_收集箱\\\\作品集\\\\作品视频\\\\Eat Your Fish\\\\封面.png' 'D:\\\\000_收集箱\\\\作品集\\\\网站\\\\public\\\\covers\\\\eat-fish.png')",
+      "Bash(cp 'D:\\\\000_收集箱\\\\作品集\\\\作品视频\\\\小镇警察\\\\封面.png' 'D:\\\\000_收集箱\\\\作品集\\\\网站\\\\public\\\\covers\\\\town-police.png')",
+      "Bash(cp 'D:\\\\000_收集箱\\\\作品集\\\\作品视频\\\\西部酒馆\\\\封面.png' 'D:\\\\000_收集箱\\\\作品集\\\\网站\\\\public\\\\covers\\\\western-tavern.png')",
+      "Bash(cp 'D:\\\\000_收集箱\\\\作品集\\\\作品视频\\\\Tassos\\\\封面.png' 'D:\\\\000_收集箱\\\\作品集\\\\网站\\\\public\\\\covers\\\\tassos.png')",
+      "Bash(curl -s http://localhost:5173/)",
+      "mcp__Claude_in_Chrome__switch_browser",
+      "Bash(git commit -m '优化个人介绍文字和核心能力显示 *)",
+      "Bash(git commit -m '优化技能树组件：显示清晰的技能名称和更优美的视觉设计 *)"
     ]
   }
 }
