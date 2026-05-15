@@ -6,10 +6,11 @@ import type { Project } from '../types'
 interface BentoCardProps {
   project: Project
   isLarge?: boolean
-  onClick: (project: Project) => void
+  section?: string
+  onClick: (project: Project, section?: string) => void
 }
 
-export const BentoCard = ({ project, isLarge, onClick }: BentoCardProps) => {
+export const BentoCard = ({ project, isLarge, section, onClick }: BentoCardProps) => {
   const [isHovered, setIsHovered] = useState(false)
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -51,7 +52,7 @@ export const BentoCard = ({ project, isLarge, onClick }: BentoCardProps) => {
       transition={{ duration: 0.3 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      onClick={() => onClick(project)}
+      onClick={() => onClick(project, section)}
       style={{ padding: '1.5rem' }}
     >
       <div

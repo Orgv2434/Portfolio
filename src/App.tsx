@@ -79,6 +79,23 @@ function App() {
     return () => clearTimeout(timer)
   }, [])
 
+  // 监听项目详情页关闭，执行返回滚动
+  useEffect(() => {
+    if (selectedProject === null && activeProjectSection !== 'home') {
+      // 延迟执行滚动，确保DOM已经更新
+      const timer = setTimeout(() => {
+        const element = document.getElementById(activeProjectSection)
+        if (element) {
+          window.scrollTo({
+            top: element.offsetTop,
+            behavior: 'auto'
+          })
+        }
+      }, 0)
+      return () => clearTimeout(timer)
+    }
+  }, [selectedProject, activeProjectSection])
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY
@@ -219,23 +236,20 @@ function App() {
     }, 3000)
   }
 
-  const handleProjectClick = (project: Project) => {
+  const handleProjectClick = (project: Project, section?: string) => {
     showToast(`已打开项目: ${project.title}`, 'info')
+
+    // 如果传递了section参数，直接使用；否则用检测的值
+    const targetSection = section ? (section as SectionType) : activeSectionRef.current
+
+    setActiveProjectSection(targetSection)
     setSelectedProject(project)
-    setActiveProjectSection(activeSectionRef.current)
     window.scrollTo(0, 0)
   }
 
   const handleBack = () => {
+    // 关闭项目详情页，滚动由useEffect处理
     setSelectedProject(null)
-    // 不触发转场动画，直接滚动回到之前的位置
-    const element = document.getElementById(activeProjectSection)
-    if (element) {
-      window.scrollTo({
-        top: element.offsetTop,
-        behavior: 'auto'
-      })
-    }
   }
 
   // 如果选中了项目，显示项目详情页
@@ -506,7 +520,7 @@ function App() {
                 </>
               ) : (
                 data.projects.featured.map((project) => (
-                  <BentoCard onClick={handleProjectClick} key={project.id} project={project} isLarge={project.isLarge} />
+                  <BentoCard onClick={handleProjectClick} key={project.id} project={project} isLarge={project.isLarge} section="featured" />
                 ))
               )}
             </div>
@@ -529,7 +543,7 @@ function App() {
                 </>
               ) : (
                 data.projects.planning.map((project) => (
-                  <BentoCard onClick={handleProjectClick} key={project.id} project={project} />
+                  <BentoCard onClick={handleProjectClick} key={project.id} project={project} section="planning" />
                 ))
               )}
             </div>
@@ -553,8 +567,8 @@ function App() {
                 </>
               ) : (
                 <>
-                  <BentoCard onClick={handleProjectClick} key="client-dev" project={data.projects.technology[0]} isLarge />
-                  <BentoCard onClick={handleProjectClick} key="tech-other" project={data.projects.technology[1]} />
+                  <BentoCard onClick={handleProjectClick} key="client-dev" project={data.projects.technology[0]} isLarge section="technology" />
+                  <BentoCard onClick={handleProjectClick} key="tech-other" project={data.projects.technology[1]} section="technology" />
                 </>
               )}
             </div>
@@ -574,7 +588,7 @@ function App() {
               {isLoading ? (
                 <SkeletonCard isLarge />
               ) : (
-                <BentoCard onClick={handleProjectClick} key="visual-effects" project={data.projects.technology[1]} isLarge />
+                <BentoCard onClick={handleProjectClick} key="visual-effects" project={data.projects.technology[1]} isLarge section="ta" />
               )}
             </div>
             <SkillGrid skills={data.skills.ta} emoji="🎨" />
@@ -593,7 +607,7 @@ function App() {
               {isLoading ? (
                 <SkeletonCard isLarge />
               ) : (
-                <BentoCard onClick={handleProjectClick} key="ai-integration" project={data.projects.ai[0]} isLarge />
+                <BentoCard onClick={handleProjectClick} key="ai-integration" project={data.projects.ai[0]} isLarge section="ai" />
               )}
             </div>
             <SkillGrid skills={data.skills.ai} emoji="🧠" />
