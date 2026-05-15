@@ -16,7 +16,14 @@ export const BentoCard = ({ project, isLarge, section, onClick }: BentoCardProps
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    if (!project.videoPath) return
+    // 如果有coverPath，直接使用
+    if (project.coverPath) {
+      setThumbnailUrl(project.coverPath)
+      return
+    }
+
+    // 否则从视频提取缩略图
+    if (!project.videoPath || project.videoPath.startsWith('http')) return
 
     const video = document.createElement('video')
     video.crossOrigin = 'anonymous'
@@ -40,7 +47,7 @@ export const BentoCard = ({ project, isLarge, section, onClick }: BentoCardProps
 
     video.addEventListener('loadeddata', extractThumbnail, { once: true })
     video.load()
-  }, [project.videoPath])
+  }, [project.videoPath, project.coverPath])
 
   return (
     <motion.div

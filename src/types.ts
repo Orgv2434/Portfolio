@@ -22,6 +22,7 @@ export interface Project {
   category?: string
   isLarge?: boolean
   videoPath?: string
+  coverPath?: string
   details?: ProjectDetails
   skills?: string[]
   topics?: string[]

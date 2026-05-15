@@ -18,6 +18,7 @@
         "colors": ["#ffd93d", "#ffb347"],
         "isLarge": true,
         "videoPath": "/videos/dialog-box.mp4",
+        "coverPath": "/covers/dialog-box.png",
         "details": {
           "role": "全栈",
           "engine": "UE5",
@@ -57,6 +58,7 @@
         "colors": ["#6bcf7f", "#4fc3f7"],
         "isLarge": true,
         "videoPath": "/videos/eat-your-fish.mp4",
+        "coverPath": "/covers/eat-fish.png",
         "details": {
           "role": "全栈",
           "engine": "Unity",
@@ -80,6 +82,7 @@
         "colors": ["#4d96ff", "#3b82f6"],
         "isLarge": true,
         "videoPath": "/videos/town-police.mp4",
+        "coverPath": "/covers/town-police.png",
         "details": {
           "role": "全栈",
           "tools": ["Unreal Engine 5", "Unity"],
@@ -99,6 +102,7 @@
         "emoji": "🤠",
         "colors": ["#ff9844", "#ffb347"],
         "videoPath": "/videos/western-tavern.mp4",
+        "coverPath": "/covers/western-tavern.png",
         "details": {
           "role": "全栈",
           "tools": ["Unreal Engine 5", "Unity"],
@@ -119,6 +123,7 @@
         "colors": ["#ff6b6b", "#ff9844"],
         "isLarge": false,
         "videoPath": "https://b23.tv/KhSZjHl",
+        "coverPath": "/covers/tassos.png",
         "details": {
           "role": "全栈",
           "engine": "自主引擎/Unity",
