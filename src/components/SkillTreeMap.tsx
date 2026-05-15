@@ -210,11 +210,11 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
                     textAnchor="middle"
                     dominantBaseline="middle"
                     fill={categories[selectedCategory].color}
-                    fontSize="12"
+                    fontSize="11"
                     fontWeight="bold"
                     style={{ pointerEvents: 'none', userSelect: 'none' }}
                   >
-                    {skillIdx + 1}
+                    {categories[selectedCategory].skills[skillIdx].split('（')[0]}
                   </motion.text>
                 </motion.g>
               ))}
@@ -235,8 +235,9 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
                       x={labelX}
                       y={labelY}
                       fill={categories[selectedCategory].color}
-                      fontSize="14"
-                      fontWeight="600"
+                      fontSize="16"
+                      fontWeight="700"
+                      letterSpacing="1"
                       style={{ pointerEvents: 'none' }}
                     >
                       {idx + 1}. {skill}
