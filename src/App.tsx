@@ -74,38 +74,49 @@ function App() {
     activeSectionRef.current = activeSection
   }, [activeSection])
 
+  // 用 ref 保存"要返回的 section"，仅在点击返回按钮时写入，避免 activeProjectSection 变化误触发
+  const returnToSectionRef = useRef<SectionType | null>(null)
+  // 返回跳转冷却锁：跳转期间禁止 scroll 事件触发转场动画
+  const isReturningRef = useRef(false)
+
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1500)
     return () => clearTimeout(timer)
   }, [])
 
-  // 监听项目详情页关闭，执行返回滚动
+  // 监听项目详情页关闭，执行返回滚动（只依赖 selectedProject，避免 activeProjectSection 变化误触发）
   useEffect(() => {
-    if (selectedProject === null && activeProjectSection !== 'home') {
-      // 延迟执行滚动，确保DOM已经更新
+    if (selectedProject === null && returnToSectionRef.current !== null) {
+      const section = returnToSectionRef.current
+      returnToSectionRef.current = null
+
       const timer = setTimeout(() => {
-        const element = document.getElementById(activeProjectSection)
+        const element = document.getElementById(section)
         if (element) {
-          window.scrollTo({
-            top: element.offsetTop,
-            behavior: 'auto'
-          })
+          // 标记正在返回，阻止 scroll 事件触发转场动画
+          isReturningRef.current = true
+          window.scrollTo({ top: element.offsetTop, behavior: 'auto' })
+          // 滚动完成后解除锁定
+          setTimeout(() => { isReturningRef.current = false }, 200)
         }
       }, 0)
       return () => clearTimeout(timer)
     }
-  }, [selectedProject, activeProjectSection])
+  }, [selectedProject])
 
   useEffect(() => {
     const handleScroll = () => {
+      // 返回跳转期间，忽略 scroll 事件，防止误触转场动画
+      if (isReturningRef.current) return
+
       const scrollY = window.scrollY
       const newDepth = scrollY * 3
       setDepth(newDepth)
-      
+
       const prevScrollY = lastScrollYRef.current
       const isScrollingUp = scrollY < prevScrollY
       lastScrollYRef.current = scrollY
-      
+
       const currentAtTop = scrollY < 50
       // 更新顶部状态
       setIsAtTop(currentAtTop)
@@ -248,7 +259,8 @@ function App() {
   }
 
   const handleBack = () => {
-    // 关闭项目详情页，滚动由useEffect处理
+    // 把要返回的 section 写入 ref，useEffect 会在 DOM 更新后执行滚动
+    returnToSectionRef.current = activeProjectSection
     setSelectedProject(null)
   }
 
