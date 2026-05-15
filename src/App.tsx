@@ -516,11 +516,11 @@ function App() {
                   category="编程"
                   color="#64B5FF"
                   nodes={[
-                    { name: 'C/C++\n数据结构与算法', level: 'basic', x: 150, y: 50 },
-                    { name: 'C# (Unity)', level: 'intermediate', x: 80, y: 150 },
-                    { name: '蓝图脚本 (UE)', level: 'intermediate', x: 150, y: 150 },
-                    { name: '性能优化', level: 'advanced', x: 80, y: 280 },
-                    { name: '网络编程', level: 'advanced', x: 220, y: 280 }
+                    { name: 'C/C++\n数据结构', level: 'basic', x: 160, y: 60 },
+                    { name: 'C#\nUnity', level: 'intermediate', x: 80, y: 180 },
+                    { name: '蓝图脚本\nUE', level: 'intermediate', x: 240, y: 180 },
+                    { name: '性能\n优化', level: 'advanced', x: 60, y: 320 },
+                    { name: '网络\n编程', level: 'advanced', x: 260, y: 320 }
                   ]}
                   connections={[[0, 1], [0, 2], [1, 3], [2, 4]]}
                 />
@@ -530,11 +530,11 @@ function App() {
                   category="图形学"
                   color="#A78BFA"
                   nodes={[
-                    { name: 'Games101\n计算机图形学', level: 'basic', x: 150, y: 50 },
-                    { name: 'Unity Shader\n编程', level: 'intermediate', x: 80, y: 150 },
-                    { name: '粒子效果\n系统', level: 'intermediate', x: 150, y: 150 },
-                    { name: '渲染\n管线', level: 'advanced', x: 80, y: 280 },
-                    { name: 'UI系统\n设计', level: 'advanced', x: 220, y: 280 }
+                    { name: 'Games101\n图形学', level: 'basic', x: 160, y: 60 },
+                    { name: 'Shader\n编程', level: 'intermediate', x: 80, y: 180 },
+                    { name: '粒子\n系统', level: 'intermediate', x: 240, y: 180 },
+                    { name: '渲染\n管线', level: 'advanced', x: 60, y: 320 },
+                    { name: 'UI\n系统', level: 'advanced', x: 260, y: 320 }
                   ]}
                   connections={[[0, 1], [0, 2], [1, 3], [2, 4]]}
                 />
@@ -544,14 +544,14 @@ function App() {
                   category="引擎 & 策划"
                   color="#4DD9FF"
                   nodes={[
-                    { name: 'UE GAS\nGameplay\nAbility System', level: 'basic', x: 70, y: 50 },
-                    { name: 'ALS\nAdvanced\nLocomotion', level: 'basic', x: 230, y: 50 },
-                    { name: '动画\n系统', level: 'intermediate', x: 100, y: 150 },
-                    { name: '状态\n机', level: 'intermediate', x: 150, y: 150 },
-                    { name: '事件\n系统', level: 'intermediate', x: 200, y: 150 },
-                    { name: '战斗\n策划', level: 'advanced', x: 60, y: 280 },
-                    { name: '玩法\n策划', level: 'advanced', x: 150, y: 280 },
-                    { name: '系统\n设计', level: 'advanced', x: 240, y: 280 }
+                    { name: 'UE GAS', level: 'basic', x: 70, y: 60 },
+                    { name: 'ALS', level: 'basic', x: 250, y: 60 },
+                    { name: '动画\n系统', level: 'intermediate', x: 40, y: 200 },
+                    { name: '状态\n机', level: 'intermediate', x: 160, y: 200 },
+                    { name: '事件\n系统', level: 'intermediate', x: 280, y: 200 },
+                    { name: '战斗\n策划', level: 'advanced', x: 40, y: 340 },
+                    { name: '玩法\n策划', level: 'advanced', x: 160, y: 340 },
+                    { name: '系统\n设计', level: 'advanced', x: 280, y: 340 }
                   ]}
                   connections={[[0, 2], [0, 3], [1, 4], [2, 5], [3, 6], [4, 7]]}
                 />
