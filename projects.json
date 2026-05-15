@@ -108,6 +108,30 @@
             "丰富的 NPC 互动"
           ]
         }
+      },
+      {
+        "id": "tassos",
+        "title": "Tassos",
+        "description": "大一生一个月开发的动作游戏。展示完整的游戏从策划、程序到美术的实现能力。",
+        "category": "动作游戏",
+        "tags": ["动作游戏", "游戏实况", "完整项目"],
+        "emoji": "⚔️",
+        "colors": ["#ff6b6b", "#ff9844"],
+        "isLarge": false,
+        "videoPath": "https://b23.tv/KhSZjHl",
+        "details": {
+          "role": "全栈",
+          "engine": "自主引擎/Unity",
+          "tools": ["游戏引擎", "美术工具"],
+          "achievements": [
+            "一个月完成完整游戏开发",
+            "实现完整的动作游戏玩法",
+            "包含角色、敌人、关卡设计",
+            "发布实况演示视频"
+          ],
+          "videoUrl": "https://b23.tv/KhSZjHl",
+          "demoUrl": "https://b23.tv/KhSZjHl"
+        }
       }
     ],
     "planning": [
