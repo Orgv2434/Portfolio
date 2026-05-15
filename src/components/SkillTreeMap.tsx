@@ -13,8 +13,8 @@ interface SkillTreeMapProps {
 }
 
 export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
-  const svgWidth = 1000;
-  const svgHeight = 600;
+  const svgWidth = 1200;
+  const svgHeight = 800;
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   // 中心点
@@ -24,27 +24,43 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
   // 计算分类的位置（围绕中心分布）
   const categoryPositions = categories.map((_, idx) => {
     const angle = (idx / categories.length) * Math.PI * 2;
-    const radius = 180;
+    const radius = 200;
     return {
       x: centerX + Math.cos(angle - Math.PI / 2) * radius,
       y: centerY + Math.sin(angle - Math.PI / 2) * radius
     };
   });
 
+  // 计算选中分类的技能节点位置（围绕分类节点分布）
+  const getSkillPositions = (categoryIdx: number) => {
+    const catPos = categoryPositions[categoryIdx];
+    const skills = categories[categoryIdx].skills;
+    const skillCount = skills.length;
+
+    return skills.map((_, skillIdx) => {
+      const angle = (skillIdx / skillCount) * Math.PI * 2;
+      const radius = 70;
+      return {
+        x: catPos.x + Math.cos(angle) * radius,
+        y: catPos.y + Math.sin(angle) * radius
+      };
+    });
+  };
+
   return (
     <div className="glass rounded-3xl p-8 backdrop-blur-md border border-white/10 w-full">
       <div className="text-center mb-8">
         <h3 className="text-3xl font-bold text-white mb-2">🌳 技能体系树</h3>
-        <p className="text-white/60 text-sm">点击分类节点查看对应的技能</p>
+        <p className="text-white/60 text-sm">点击分类节点查看对应的技能子树</p>
       </div>
 
       {/* SVG Canvas for tree connections */}
       <svg
         width="100%"
         height={svgHeight}
-        className="mx-auto pointer-events-none mb-8"
+        className="mx-auto"
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-        style={{ maxHeight: '600px' }}
+        style={{ maxHeight: '800px', border: '2px solid rgba(100, 200, 255, 0.2)', borderRadius: '12px' }}
       >
         <defs>
           <filter id="glow-tree">
@@ -78,7 +94,7 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
         <motion.circle
           cx={centerX}
           cy={centerY}
-          r="30"
+          r="35"
           fill="rgba(100, 200, 255, 0.2)"
           stroke="#64C8FF"
           strokeWidth="2"
@@ -89,7 +105,7 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
         />
         <motion.text
           x={centerX}
-          y={centerY + 8}
+          y={centerY + 10}
           textAnchor="middle"
           fill="#64C8FF"
           fontSize="20"
@@ -103,11 +119,11 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
 
         {/* Category nodes */}
         {categoryPositions.map((pos, idx) => (
-          <motion.g key={`cat-node-${idx}`} style={{ pointerEvents: 'auto' }}>
+          <motion.g key={`cat-node-${idx}`} style={{ cursor: 'pointer' }}>
             <motion.circle
               cx={pos.x}
               cy={pos.y}
-              r="28"
+              r="32"
               fill={`${categories[idx].color}20`}
               stroke={categories[idx].color}
               strokeWidth="2"
@@ -115,174 +131,160 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.8 + idx * 0.2, duration: 0.6 }}
-              style={{ cursor: 'pointer' }}
               onClick={() => setSelectedCategory(selectedCategory === idx ? null : idx)}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.15 }}
+              style={{
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
             />
             <motion.text
               x={pos.x}
-              y={pos.y + 5}
+              y={pos.y + 6}
               textAnchor="middle"
               fill={categories[idx].color}
-              fontSize="16"
+              fontSize="18"
               fontWeight="bold"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 + idx * 0.2, duration: 0.5 }}
-              style={{ cursor: 'pointer', pointerEvents: 'auto' }}
               onClick={() => setSelectedCategory(selectedCategory === idx ? null : idx)}
+              style={{ cursor: 'pointer', pointerEvents: 'auto', userSelect: 'none' }}
             >
               {categories[idx].icon}
             </motion.text>
           </motion.g>
         ))}
+
+        {/* Skill nodes for selected category */}
+        <AnimatePresence>
+          {selectedCategory !== null && (
+            <>
+              {/* Branches from category to skills */}
+              {getSkillPositions(selectedCategory).map((skillPos, skillIdx) => (
+                <motion.line
+                  key={`skill-branch-${skillIdx}`}
+                  x1={categoryPositions[selectedCategory].x}
+                  y1={categoryPositions[selectedCategory].y}
+                  x2={skillPos.x}
+                  y2={skillPos.y}
+                  stroke={categories[selectedCategory].color}
+                  strokeWidth="2"
+                  opacity="0.5"
+                  filter="url(#glow-tree)"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.8, delay: skillIdx * 0.1 }}
+                  exit={{ pathLength: 0, transition: { duration: 0.3 } }}
+                />
+              ))}
+
+              {/* Skill nodes */}
+              {getSkillPositions(selectedCategory).map((skillPos, skillIdx) => (
+                <motion.g
+                  key={`skill-node-${skillIdx}`}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: skillIdx * 0.1 + 0.3,
+                    type: 'spring',
+                    stiffness: 200,
+                    damping: 20
+                  }}
+                >
+                  <motion.circle
+                    cx={skillPos.x}
+                    cy={skillPos.y}
+                    r="24"
+                    fill={`${categories[selectedCategory].color}30`}
+                    stroke={categories[selectedCategory].color}
+                    strokeWidth="2"
+                    filter="url(#glow-tree)"
+                    whileHover={{ scale: 1.2, r: 28 }}
+                  />
+                  <motion.text
+                    x={skillPos.x}
+                    y={skillPos.y}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fill={categories[selectedCategory].color}
+                    fontSize="12"
+                    fontWeight="bold"
+                    style={{ pointerEvents: 'none', userSelect: 'none' }}
+                  >
+                    {skillIdx + 1}
+                  </motion.text>
+                </motion.g>
+              ))}
+
+              {/* Skill labels below SVG */}
+              <motion.g
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                {categories[selectedCategory].skills.map((skill, idx) => {
+                  const labelY = svgHeight - 80 + (idx % 2) * 35;
+                  const labelX = 100 + (idx % 2) * (svgWidth - 200);
+                  return (
+                    <text
+                      key={`label-${idx}`}
+                      x={labelX}
+                      y={labelY}
+                      fill={categories[selectedCategory].color}
+                      fontSize="14"
+                      fontWeight="600"
+                      style={{ pointerEvents: 'none' }}
+                    >
+                      {idx + 1}. {skill}
+                    </text>
+                  );
+                })}
+              </motion.g>
+            </>
+          )}
+        </AnimatePresence>
       </svg>
 
-      {/* Category cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* Category cards - simplified view */}
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {categories.map((category, idx) => (
           <motion.div
             key={`card-${idx}`}
-            className="group cursor-pointer"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.15, duration: 0.5 }}
+            className={`p-4 rounded-lg backdrop-blur-sm border transition-all duration-300 cursor-pointer ${
+              selectedCategory === idx ? 'scale-105' : 'hover:scale-105'
+            }`}
+            style={{
+              background: `${category.color}15`,
+              borderColor: selectedCategory === idx ? category.color : `${category.color}40`,
+              borderWidth: selectedCategory === idx ? '2px' : '1px',
+            }}
             onClick={() => setSelectedCategory(selectedCategory === idx ? null : idx)}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
           >
-            <div
-              className={`rounded-2xl p-6 backdrop-blur-sm border-2 transition-all duration-300 ${
-                selectedCategory === idx ? 'scale-105 border-opacity-100' : 'hover:scale-105 border-opacity-60'
-              }`}
-              style={{
-                background: `${category.color}15`,
-                borderColor: selectedCategory === idx ? category.color : `${category.color}60`,
-              }}
-            >
-              {/* Category header */}
-              <div className="flex items-center gap-3 mb-4">
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center text-xl backdrop-blur-sm"
-                  style={{ background: `${category.color}30`, border: `2px solid ${category.color}` }}
-                >
-                  {category.icon}
-                </div>
-                <h4 className="text-lg font-bold text-white">{category.name}</h4>
-              </div>
-
-              {/* Skills tree within category */}
-              <div className="space-y-2">
-                {category.skills.map((skill, skillIdx) => (
-                  <motion.div
-                    key={`skill-${skillIdx}`}
-                    className="flex items-center gap-2 group/skill"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (idx * 0.15) + (skillIdx * 0.05), duration: 0.4 }}
-                  >
-                    {/* Branch connector */}
-                    <div
-                      className="w-6 h-0.5 group-hover/skill:w-8 transition-all duration-300"
-                      style={{ background: `linear-gradient(to right, ${category.color}60, ${category.color}20)` }}
-                    />
-
-                    {/* Skill node */}
-                    <div
-                      className="flex-1 px-3 py-2 rounded-lg text-sm text-white transition-all duration-300 group-hover/skill:scale-105 group-hover/skill:shadow-lg"
-                      style={{
-                        background: `${category.color}25`,
-                        borderLeft: `3px solid ${category.color}`,
-                        boxShadow: `inset 0 0 10px ${category.color}10`,
-                      }}
-                    >
-                      {skill}
-                    </div>
-
-                    {/* Leaf icon */}
-                    <span className="text-sm opacity-0 group-hover/skill:opacity-100 transition-opacity">🍃</span>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Count indicator */}
-              <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center text-xs text-white/60">
-                <span>{category.skills.length} 项技能</span>
-                <motion.div
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 20, repeat: Infinity }}
-                  className="text-lg"
-                >
-                  ◉
-                </motion.div>
-              </div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">{category.icon}</span>
+              <h4 className="font-bold text-white text-sm">{category.name}</h4>
             </div>
+            <p className="text-white/60 text-xs">{category.skills.length} 项技能</p>
           </motion.div>
         ))}
       </div>
-
-      {/* Selected category details - Popup view */}
-      <AnimatePresence>
-        {selectedCategory !== null && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.3 }}
-            className="glass rounded-3xl p-8 backdrop-blur-md border border-white/10 mb-8"
-          >
-            <div className="flex items-center gap-4 mb-6">
-              <div
-                className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl backdrop-blur-sm"
-                style={{
-                  background: `${categories[selectedCategory].color}30`,
-                  border: `2px solid ${categories[selectedCategory].color}`
-                }}
-              >
-                {categories[selectedCategory].icon}
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-2">{categories[selectedCategory].name}</h3>
-                <p className="text-white/60">共 {categories[selectedCategory].skills.length} 项技能</p>
-              </div>
-            </div>
-
-            {/* Detailed skills grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {categories[selectedCategory].skills.map((skill, idx) => (
-                <motion.div
-                  key={`detail-skill-${idx}`}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: idx * 0.08, duration: 0.3 }}
-                  className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-110"
-                  style={{
-                    background: `${categories[selectedCategory].color}25`,
-                    border: `2px solid ${categories[selectedCategory].color}40`,
-                  }}
-                >
-                  <p className="text-white font-semibold text-sm break-words">{skill}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            <button
-              onClick={() => setSelectedCategory(null)}
-              className="mt-6 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-all duration-300"
-            >
-              关闭
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Legend */}
       <motion.div
         className="mt-8 pt-8 border-t border-white/10 text-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.5 }}
+        transition={{ delay: 1.5, duration: 0.5 }}
       >
         <p className="text-white/60 text-sm">
-          🌳 技能树由根部（中心）分支出各个分类，每个分类又细分为具体的技能节点
+          🌳 点击分类节点展开对应的技能子树，技能节点会像树枝一样从分类节点挂出
         </p>
       </motion.div>
     </div>
