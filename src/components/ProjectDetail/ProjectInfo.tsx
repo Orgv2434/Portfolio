@@ -296,13 +296,13 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
 
       {/* 资源链接 */}
       {(details.demoUrl || details.githubUrl || details.documentUrl) && (
-        <section className="py-16 px-4 md:px-8">
+        <section className="py-20 px-4 md:px-8 border-t border-white/10 mt-12">
           <div className="max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-2 justify-center">
               <BookOpen size={28} className="text-cyan-400" />
               相关资源
             </h3>
-            <div className="flex flex-wrap gap-4 justify-center items-center pt-8">
+            <div className="flex flex-wrap gap-6 justify-center items-center py-8">
               {details.demoUrl && (
                 <a
                   href={details.demoUrl}
