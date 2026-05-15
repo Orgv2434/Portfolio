@@ -26,7 +26,9 @@
       "Bash(curl -s http://localhost:5173/)",
       "mcp__Claude_in_Chrome__switch_browser",
       "Bash(git commit -m '优化个人介绍文字和核心能力显示 *)",
-      "Bash(git commit -m '优化技能树组件：显示清晰的技能名称和更优美的视觉设计 *)"
+      "Bash(git commit -m '优化技能树组件：显示清晰的技能名称和更优美的视觉设计 *)",
+      "Bash(curl -s \"http://localhost:5173/src/components/ProjectDetail/ProjectInfo.tsx\")",
+      "Bash(git commit *)"
     ]
   }
 }
