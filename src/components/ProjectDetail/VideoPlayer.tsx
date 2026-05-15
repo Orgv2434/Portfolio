@@ -9,6 +9,9 @@ interface VideoPlayerProps {
 }
 
 export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
+  // 判断是否是外部链接（http/https 或 b23.tv 等视频网站链接）
+  const isExternalLink = videoPath.startsWith('http://') || videoPath.startsWith('https://') || videoPath.includes('b23.tv');
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [showControls, setShowControls] = useState(true);
@@ -126,6 +129,56 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
+
+  // 如果是外部链接，显示 iframe 或链接按钮
+  if (isExternalLink) {
+    return (
+      <motion.div
+        ref={containerRef}
+        className="relative w-full max-w-4xl mx-auto h-[400px] md:h-[500px] overflow-hidden rounded-2xl shadow-2xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        style={{
+          background: `linear-gradient(135deg, ${colors[0]}80, ${colors[1]}80)`,
+        }}
+      >
+        {/* 背景渐变层 */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 100%)`,
+          }}
+        />
+
+        {/* 显示标题和打开链接按钮 */}
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center text-white"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <motion.h1
+            className="text-4xl md:text-6xl font-bold mb-8 text-center px-4"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            {title}
+          </motion.h1>
+          <motion.a
+            href={videoPath}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-8 py-4 bg-white text-black rounded-lg font-semibold hover:bg-gray-100 transition"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            点击打开视频
+          </motion.a>
+        </motion.div>
+      </motion.div>
+    )
+  }
 
   return (
     <motion.div
