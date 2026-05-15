@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface SkillCategory {
   name: string;
@@ -14,6 +15,7 @@ interface SkillTreeMapProps {
 export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
   const svgWidth = 1000;
   const svgHeight = 600;
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   // 中心点
   const centerX = svgWidth / 2;
@@ -33,7 +35,7 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
     <div className="glass rounded-3xl p-8 backdrop-blur-md border border-white/10 w-full">
       <div className="text-center mb-8">
         <h3 className="text-3xl font-bold text-white mb-2">🌳 技能体系树</h3>
-        <p className="text-white/60 text-sm">点击展开查看各分类的技能树</p>
+        <p className="text-white/60 text-sm">点击分类节点查看对应的技能</p>
       </div>
 
       {/* SVG Canvas for tree connections */}
@@ -101,7 +103,7 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
 
         {/* Category nodes */}
         {categoryPositions.map((pos, idx) => (
-          <motion.g key={`cat-node-${idx}`}>
+          <motion.g key={`cat-node-${idx}`} style={{ pointerEvents: 'auto' }}>
             <motion.circle
               cx={pos.x}
               cy={pos.y}
@@ -113,6 +115,9 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.8 + idx * 0.2, duration: 0.6 }}
+              style={{ cursor: 'pointer' }}
+              onClick={() => setSelectedCategory(selectedCategory === idx ? null : idx)}
+              whileHover={{ scale: 1.1 }}
             />
             <motion.text
               x={pos.x}
@@ -124,6 +129,8 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 + idx * 0.2, duration: 0.5 }}
+              style={{ cursor: 'pointer', pointerEvents: 'auto' }}
+              onClick={() => setSelectedCategory(selectedCategory === idx ? null : idx)}
             >
               {categories[idx].icon}
             </motion.text>
@@ -132,7 +139,7 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
       </svg>
 
       {/* Category cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {categories.map((category, idx) => (
           <motion.div
             key={`card-${idx}`}
@@ -140,12 +147,15 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.15, duration: 0.5 }}
+            onClick={() => setSelectedCategory(selectedCategory === idx ? null : idx)}
           >
             <div
-              className="rounded-2xl p-6 backdrop-blur-sm border-2 transition-all duration-300 hover:scale-105"
+              className={`rounded-2xl p-6 backdrop-blur-sm border-2 transition-all duration-300 ${
+                selectedCategory === idx ? 'scale-105 border-opacity-100' : 'hover:scale-105 border-opacity-60'
+              }`}
               style={{
                 background: `${category.color}15`,
-                borderColor: `${category.color}60`,
+                borderColor: selectedCategory === idx ? category.color : `${category.color}60`,
               }}
             >
               {/* Category header */}
@@ -208,6 +218,61 @@ export const SkillTreeMap = ({ categories }: SkillTreeMapProps) => {
           </motion.div>
         ))}
       </div>
+
+      {/* Selected category details - Popup view */}
+      <AnimatePresence>
+        {selectedCategory !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="glass rounded-3xl p-8 backdrop-blur-md border border-white/10 mb-8"
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <div
+                className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl backdrop-blur-sm"
+                style={{
+                  background: `${categories[selectedCategory].color}30`,
+                  border: `2px solid ${categories[selectedCategory].color}`
+                }}
+              >
+                {categories[selectedCategory].icon}
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">{categories[selectedCategory].name}</h3>
+                <p className="text-white/60">共 {categories[selectedCategory].skills.length} 项技能</p>
+              </div>
+            </div>
+
+            {/* Detailed skills grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {categories[selectedCategory].skills.map((skill, idx) => (
+                <motion.div
+                  key={`detail-skill-${idx}`}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: idx * 0.08, duration: 0.3 }}
+                  className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-110"
+                  style={{
+                    background: `${categories[selectedCategory].color}25`,
+                    border: `2px solid ${categories[selectedCategory].color}40`,
+                  }}
+                >
+                  <p className="text-white font-semibold text-sm break-words">{skill}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setSelectedCategory(null)}
+              className="mt-6 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-all duration-300"
+            >
+              关闭
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Legend */}
       <motion.div

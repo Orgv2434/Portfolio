@@ -517,48 +517,39 @@ function App() {
                     icon: '💻',
                     color: '#64B5FF',
                     skills: [
-                      'C / C++ (数据结构与算法)',
-                      'C# (Unity)',
-                      '蓝图脚本 (UE)',
-                      '性能优化',
-                      '网络编程'
+                      'C',
+                      'C#',
+                      'C++',
+                      '数据结构与算法'
                     ]
                   },
                   {
-                    name: '图形学',
+                    name: '计算机图形学',
                     icon: '🎨',
                     color: '#A78BFA',
                     skills: [
-                      'Games101 计算机图形学',
-                      'Unity Shader 编程',
-                      '粒子效果系统',
-                      '渲染管线',
-                      'UI 系统设计'
+                      'Unity Shader入门精要',
+                      'Games101'
                     ]
                   },
                   {
-                    name: '引擎系统',
+                    name: '游戏引擎',
                     icon: '⚙️',
                     color: '#4DD9FF',
                     skills: [
-                      'UE GAS (Gameplay Ability System)',
-                      'ALS (Advanced Locomotion System)',
-                      '动画系统',
-                      '状态机',
-                      '事件系统'
+                      'Ue Gas',
+                      'ALS高级运动系统'
                     ]
                   },
                   {
-                    name: '游戏策划',
+                    name: '策划',
                     icon: '🎮',
                     color: '#6BCF7F',
                     skills: [
                       '玩法策划',
                       '文案策划',
                       '战斗策划',
-                      '任务管理',
-                      '关卡设计',
-                      '系统设计'
+                      '任务管理'
                     ]
                   }
                 ]}

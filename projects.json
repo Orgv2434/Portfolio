@@ -220,33 +220,24 @@
   },
   "skills": {
     "programming": [
-      "C / C++ (数据结构与算法)",
-      "C# (Unity)",
-      "蓝图脚本 (UE)",
-      "性能优化",
-      "网络编程"
+      "C",
+      "C#",
+      "C++",
+      "数据结构与算法"
     ],
     "graphics": [
-      "Unity Shader 编程",
-      "Games101 计算机图形学",
-      "粒子效果系统",
-      "渲染管线",
-      "UI 系统设计"
+      "Unity Shader入门精要",
+      "Games101"
     ],
     "engine": [
-      "UE GAS (Gameplay Ability System)",
-      "ALS (Advanced Locomotion System)",
-      "动画系统",
-      "状态机",
-      "事件系统"
+      "Ue Gas",
+      "ALS高级运动系统"
     ],
     "planning": [
       "玩法策划",
       "文案策划",
       "战斗策划",
-      "任务管理",
-      "关卡设计",
-      "系统设计"
+      "任务管理"
     ],
     "ai": [
       "游戏 AI 设计",
