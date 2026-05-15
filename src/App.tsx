@@ -18,7 +18,7 @@ import { WaterDroplets } from './components/WaterDroplets'
 import { SparklingWater } from './components/SparklingWater'
 import { DepthIndicator } from './components/DepthIndicator'
 import { ScrollHint } from './components/ScrollHint'
-import { SkillTree } from './components/SkillTree'
+import { SkillTreeMap } from './components/SkillTreeMap'
 import { BentoCard } from './components/BentoCard'
 import { SkeletonCard } from './components/SkeletonCard'
 import { SkillGrid } from './components/SkillGrid'
@@ -510,52 +510,59 @@ function App() {
 
             <div className="mb-8">
               <h3 className="text-xl font-bold mb-6 text-white/90">核心能力技能树</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* 编程技能树 */}
-                <SkillTree
-                  category="编程"
-                  color="#64B5FF"
-                  nodes={[
-                    { name: 'C/C++\n数据结构', level: 'basic', x: 160, y: 60 },
-                    { name: 'C#\nUnity', level: 'intermediate', x: 80, y: 180 },
-                    { name: '蓝图脚本\nUE', level: 'intermediate', x: 240, y: 180 },
-                    { name: '性能\n优化', level: 'advanced', x: 60, y: 320 },
-                    { name: '网络\n编程', level: 'advanced', x: 260, y: 320 }
-                  ]}
-                  connections={[[0, 1], [0, 2], [1, 3], [2, 4]]}
-                />
-
-                {/* 图形学技能树 */}
-                <SkillTree
-                  category="图形学"
-                  color="#A78BFA"
-                  nodes={[
-                    { name: 'Games101\n图形学', level: 'basic', x: 160, y: 60 },
-                    { name: 'Shader\n编程', level: 'intermediate', x: 80, y: 180 },
-                    { name: '粒子\n系统', level: 'intermediate', x: 240, y: 180 },
-                    { name: '渲染\n管线', level: 'advanced', x: 60, y: 320 },
-                    { name: 'UI\n系统', level: 'advanced', x: 260, y: 320 }
-                  ]}
-                  connections={[[0, 1], [0, 2], [1, 3], [2, 4]]}
-                />
-
-                {/* 引擎 & 策划技能树 */}
-                <SkillTree
-                  category="引擎 & 策划"
-                  color="#4DD9FF"
-                  nodes={[
-                    { name: 'UE GAS', level: 'basic', x: 70, y: 60 },
-                    { name: 'ALS', level: 'basic', x: 250, y: 60 },
-                    { name: '动画\n系统', level: 'intermediate', x: 40, y: 200 },
-                    { name: '状态\n机', level: 'intermediate', x: 160, y: 200 },
-                    { name: '事件\n系统', level: 'intermediate', x: 280, y: 200 },
-                    { name: '战斗\n策划', level: 'advanced', x: 40, y: 340 },
-                    { name: '玩法\n策划', level: 'advanced', x: 160, y: 340 },
-                    { name: '系统\n设计', level: 'advanced', x: 280, y: 340 }
-                  ]}
-                  connections={[[0, 2], [0, 3], [1, 4], [2, 5], [3, 6], [4, 7]]}
-                />
-              </div>
+              <SkillTreeMap
+                categories={[
+                  {
+                    name: '编程',
+                    icon: '💻',
+                    color: '#64B5FF',
+                    skills: [
+                      'C / C++ (数据结构与算法)',
+                      'C# (Unity)',
+                      '蓝图脚本 (UE)',
+                      '性能优化',
+                      '网络编程'
+                    ]
+                  },
+                  {
+                    name: '图形学',
+                    icon: '🎨',
+                    color: '#A78BFA',
+                    skills: [
+                      'Games101 计算机图形学',
+                      'Unity Shader 编程',
+                      '粒子效果系统',
+                      '渲染管线',
+                      'UI 系统设计'
+                    ]
+                  },
+                  {
+                    name: '引擎系统',
+                    icon: '⚙️',
+                    color: '#4DD9FF',
+                    skills: [
+                      'UE GAS (Gameplay Ability System)',
+                      'ALS (Advanced Locomotion System)',
+                      '动画系统',
+                      '状态机',
+                      '事件系统'
+                    ]
+                  },
+                  {
+                    name: '游戏策划',
+                    icon: '🎮',
+                    color: '#6BCF7F',
+                    skills: [
+                      '玩法策划',
+                      '文案策划',
+                      '战斗策划',
+                      '任务管理',
+                      '关卡设计',
+                      '系统设计'
+                    ]
+                  }
+                ]}
+              />
             </div>
 
             <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
