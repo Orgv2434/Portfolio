@@ -401,7 +401,7 @@ function App() {
         style={{ pointerEvents: showSidebar ? 'auto' : 'none' }}
       >
         <div className="sidebar-header">
-          <h1 className="sidebar-title">游戏专业</h1>
+          <h1 className="sidebar-title">{data.profile.name}</h1>
           <p className="sidebar-subtitle">{data.profile.title}</p>
         </div>
 
@@ -501,16 +501,19 @@ function App() {
             <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
               <h3 className="text-xl font-bold mb-6 text-white/90">关于我</h3>
               <p className="text-white/80 leading-relaxed text-lg">
-                我是一名游戏专业学生，具备策划、技术、TA 的全面能力。
-                求职意向优先级：技术策划 → UE 客户端程序 → Unity 客户端程序。
-                拥有多个完整项目经验，从策划到技术实现全流程参与。
+                {data.profile.bio}
               </p>
             </div>
 
             <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
               <h3 className="text-xl font-bold mb-6 text-white/90">核心能力</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {[...data.skills.planning, ...data.skills.programming, ...data.skills.ta].slice(0, 6).map((skill, idx) => (
+                {[
+                  ...data.skills.programming,
+                  ...data.skills.graphics,
+                  ...data.skills.engine,
+                  ...data.skills.planning
+                ].slice(0, 12).map((skill, idx) => (
                   <span key={idx} className="px-4 py-2 bg-white/10 text-white rounded-full text-sm backdrop-blur-sm">
                     {skill}
                   </span>
@@ -523,24 +526,27 @@ function App() {
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
                   <p className="text-white/80 leading-relaxed">
-                    姓名：Nanako
+                    <span className="text-white/60">姓名：</span>{data.personalInfo?.name || '橘岛菜菜子'}
                   </p>
                   <p className="text-white/80 leading-relaxed mt-2">
-                    专业：游戏设计与开发
+                    <span className="text-white/60">学校：</span>{data.personalInfo?.university || '中国传媒大学'}
                   </p>
                   <p className="text-white/80 leading-relaxed mt-2">
-                    学历：本科
+                    <span className="text-white/60">专业：</span>{data.personalInfo?.major || '数字媒体技术（游戏设计方向）'}
+                  </p>
+                  <p className="text-white/80 leading-relaxed mt-2">
+                    <span className="text-white/60">学历：</span>{data.personalInfo?.education || '本科'}
                   </p>
                 </div>
                 <div>
                   <p className="text-white/80 leading-relaxed">
-                    邮箱：nanako@example.com
+                    <span className="text-white/60">邮箱：</span><a href={`mailto:${data.social.email}`} className="hover:text-blue-400 transition">{data.social.email}</a>
                   </p>
                   <p className="text-white/80 leading-relaxed mt-2">
-                    电话：123-4567-8900
+                    <span className="text-white/60">所在地：</span>{data.personalInfo?.location || '北京 / 遵义'}
                   </p>
                   <p className="text-white/80 leading-relaxed mt-2">
-                    所在地：北京
+                    <span className="text-white/60">年级：</span>{data.personalInfo?.grade || '大三'}
                   </p>
                 </div>
               </div>
@@ -636,7 +642,7 @@ function App() {
                 <BentoCard onClick={handleProjectClick} key="visual-effects" project={data.projects.technology[1]} isLarge section="ta" />
               )}
             </div>
-            <SkillGrid skills={data.skills.ta} emoji="🎨" />
+            <SkillGrid skills={[...data.skills.graphics, ...data.skills.engine]} emoji="✨" />
           </motion.div>
 
           <motion.div

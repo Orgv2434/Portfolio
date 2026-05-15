@@ -1,10 +1,10 @@
 {
   "profile": {
-    "name": "Nanako's Profile",
+    "name": "橘岛菜菜子",
     "title": "全栈创意人",
-    "subtitle": "技术策划 | UE 客户端 | Unity 客户端",
-    "bio": "高复合型人才，具备策划、技术、TA 的全面能力",
-    "tags": ["策划", "技术", "TA", "AI"]
+    "subtitle": "游戏开发 | 技术策划 | 图形编程",
+    "bio": "非典型INTJ理工女，热爱游戏和代码。具备多段完整游戏项目开发经验，擅长技术开发，同时兼具游戏策划思维。中国传媒大学数字媒体技术（游戏设计方向）大三学生。",
+    "tags": ["编程", "策划", "图形学", "游戏开发"]
   },
   "projects": {
     "featured": [
@@ -219,50 +219,70 @@
     ]
   },
   "skills": {
-    "planning": [
-      "任务管理",
-      "玩法策划",
-      "文案策划",
-      "战斗策划",
-      "关卡设计",
-      "系统设计"
-    ],
     "programming": [
-      "C++ (UE5)",
+      "C / C++ (数据结构与算法)",
       "C# (Unity)",
-      "蓝图 (UE5)",
+      "蓝图脚本 (UE)",
       "性能优化",
       "网络编程"
     ],
-    "ta": [
-      "渲染",
-      "粒子效果",
-      "Shader 编程",
-      "UI 系统",
-      "动画系统"
+    "graphics": [
+      "Unity Shader 编程",
+      "Games101 计算机图形学",
+      "粒子效果系统",
+      "渲染管线",
+      "UI 系统设计"
+    ],
+    "engine": [
+      "UE GAS (Gameplay Ability System)",
+      "ALS (Advanced Locomotion System)",
+      "动画系统",
+      "状态机",
+      "事件系统"
+    ],
+    "planning": [
+      "玩法策划",
+      "文案策划",
+      "战斗策划",
+      "任务管理",
+      "关卡设计",
+      "系统设计"
     ],
     "ai": [
-      "游戏 AI",
-      "机器学习",
-      "NPC 行为"
+      "游戏 AI 设计",
+      "NPC 行为系统",
+      "机器学习应用"
     ]
   },
   "experience": [
     {
-      "title": "高复合型人才",
-      "description": "在策划、技术、TA 等多个领域具有深度实践经验",
-      "duration": "持续进阶"
+      "title": "多段完整游戏项目经验",
+      "description": "从策划到技术实现的全流程参与，具备独立开发和团队协作能力",
+      "duration": "大学期间积累"
     },
     {
-      "title": "强学习能力",
-      "description": "快速掌握新技术、新工具、新领域知识",
-      "duration": "不断学习"
+      "title": "全栈游戏开发",
+      "description": "掌握编程、图形学、引擎系统等多个领域，能独立完成游戏从策划到上线的全过程",
+      "duration": "持续深化"
+    },
+    {
+      "title": "热爱学习与创新",
+      "description": "活着的意义就是见到不一样的自己，爱好广泛，持续探索游戏开发的新技术和新方向",
+      "duration": "终身学习"
     }
   ],
   "social": {
+    "email": "2569758095@qq.com",
     "github": "https://github.com/your-username",
-    "email": "your-email@example.com",
     "linkedin": "https://linkedin.com/in/your-profile",
-    "portfolio": "https://your-portfolio.com"
+    "wechat": "your-wechat"
+  },
+  "personalInfo": {
+    "name": "橘岛菜菜子",
+    "major": "数字媒体技术（游戏设计方向）",
+    "education": "本科",
+    "location": "北京 / 遵义",
+    "university": "中国传媒大学",
+    "grade": "大三"
   }
 }
