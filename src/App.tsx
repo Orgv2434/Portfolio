@@ -76,6 +76,8 @@ function App() {
 
   // 用 ref 保存"要返回的 section"，仅在点击返回按钮时写入，避免 activeProjectSection 变化误触发
   const returnToSectionRef = useRef<SectionType | null>(null)
+  // 保存返回的具体 scrollY 位置（不仅是 section，还要记录确切位置）
+  const returnToScrollYRef = useRef<number>(0)
   // 返回跳转冷却锁：跳转期间禁止 scroll 事件触发转场动画
   const isReturningRef = useRef(false)
 
@@ -90,19 +92,26 @@ function App() {
 
   // 监听项目详情页关闭，执行返回滚动（只依赖 selectedProject，避免 activeProjectSection 变化误触发）
   useEffect(() => {
-    if (selectedProject === null && returnToSectionRef.current !== null) {
-      const section = returnToSectionRef.current
-      returnToSectionRef.current = null
+    if (selectedProject === null && returnToSectionRef.current) {
+      returnToSectionRef.current = false
+      const targetY = returnToScrollYRef.current
 
       // 用双 rAF 确保 React DOM 已真正 paint 完毕再滚动
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          const element = document.getElementById(section)
-          if (element) {
-            window.scrollTo({ top: element.offsetTop, behavior: 'auto' })
-          }
-          // 滚动指令已发出，稍后解除锁定
-          setTimeout(() => { isReturningRef.current = false }, 300)
+          // 多次滚动确保浏览器自动恢复无法覆盖
+          window.scrollTo(0, targetY)
+          requestAnimationFrame(() => {
+            window.scrollTo(0, targetY)
+            requestAnimationFrame(() => {
+              window.scrollTo(0, targetY)
+            })
+          })
+
+          // 固定延时后解除锁定
+          setTimeout(() => {
+            isReturningRef.current = false
+          }, 600)
         })
       })
     }
@@ -261,6 +270,10 @@ function App() {
     // 如果传递了section参数，直接使用；否则用检测的值
     const targetSection = section ? (section as SectionType) : activeSectionRef.current
 
+    // **务必在 scrollTo(0,0) 之前保存位置**
+    const currentScrollY = window.scrollY
+    returnToScrollYRef.current = currentScrollY
+
     setActiveProjectSection(targetSection)
     setSelectedProject(project)
     window.scrollTo(0, 0)
@@ -277,7 +290,8 @@ function App() {
     }
     infoEnterTransitionLockRef.current = false
     document.documentElement.style.overflow = ''
-    returnToSectionRef.current = activeProjectSection
+    // 不再依赖 activeProjectSection，直接用保存的 scrollY
+    returnToSectionRef.current = true as any  // 用来标识"要返回"
     setSelectedProject(null)
   }
 
