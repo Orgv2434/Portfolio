@@ -80,6 +80,10 @@ function App() {
   const isReturningRef = useRef(false)
 
   useEffect(() => {
+    // 禁用浏览器自动恢复 scroll 位置，避免 DOM 切换时位置乱跳
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual'
+    }
     const timer = setTimeout(() => setIsLoading(false), 1500)
     return () => clearTimeout(timer)
   }, [])
@@ -90,24 +94,28 @@ function App() {
       const section = returnToSectionRef.current
       returnToSectionRef.current = null
 
-      const timer = setTimeout(() => {
-        const element = document.getElementById(section)
-        if (element) {
-          // 标记正在返回，阻止 scroll 事件触发转场动画
-          isReturningRef.current = true
-          window.scrollTo({ top: element.offsetTop, behavior: 'auto' })
-          // 滚动完成后解除锁定
-          setTimeout(() => { isReturningRef.current = false }, 200)
-        }
-      }, 0)
-      return () => clearTimeout(timer)
+      // 用双 rAF 确保 React DOM 已真正 paint 完毕再滚动
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const element = document.getElementById(section)
+          if (element) {
+            window.scrollTo({ top: element.offsetTop, behavior: 'auto' })
+          }
+          // 滚动指令已发出，稍后解除锁定
+          setTimeout(() => { isReturningRef.current = false }, 300)
+        })
+      })
     }
   }, [selectedProject])
 
   useEffect(() => {
     const handleScroll = () => {
       // 返回跳转期间，忽略 scroll 事件，防止误触转场动画
-      if (isReturningRef.current) return
+      // 但仍然更新 lastScrollYRef，避免之后方向判断错乱
+      if (isReturningRef.current) {
+        lastScrollYRef.current = window.scrollY
+        return
+      }
 
       const scrollY = window.scrollY
       const newDepth = scrollY * 3
@@ -259,7 +267,16 @@ function App() {
   }
 
   const handleBack = () => {
-    // 把要返回的 section 写入 ref，useEffect 会在 DOM 更新后执行滚动
+    // 立即锁定，阻止 React 重渲染期间的 scroll 事件触发转场动画
+    isReturningRef.current = true
+    // 强制停止正在播放的转场动画
+    setShowSparkling(false)
+    if (infoEnterTimeoutRef.current) {
+      clearTimeout(infoEnterTimeoutRef.current)
+      infoEnterTimeoutRef.current = null
+    }
+    infoEnterTransitionLockRef.current = false
+    document.documentElement.style.overflow = ''
     returnToSectionRef.current = activeProjectSection
     setSelectedProject(null)
   }
