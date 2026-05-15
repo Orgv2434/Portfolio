@@ -80,6 +80,8 @@ function App() {
   const returnToScrollYRef = useRef<number>(0)
   // 返回跳转冷却锁：跳转期间禁止 scroll 事件触发转场动画
   const isReturningRef = useRef(false)
+  // 标志：是否需要执行返回操作
+  const shouldReturnRef = useRef(false)
 
   useEffect(() => {
     // 禁用浏览器自动恢复 scroll 位置，避免 DOM 切换时位置乱跳
@@ -92,8 +94,8 @@ function App() {
 
   // 监听项目详情页关闭，执行返回滚动（只依赖 selectedProject，避免 activeProjectSection 变化误触发）
   useEffect(() => {
-    if (selectedProject === null && returnToSectionRef.current) {
-      returnToSectionRef.current = false
+    if (selectedProject === null && shouldReturnRef.current) {
+      shouldReturnRef.current = false
       const targetY = returnToScrollYRef.current
 
       // 用双 rAF 确保 React DOM 已真正 paint 完毕再滚动
@@ -291,7 +293,7 @@ function App() {
     infoEnterTransitionLockRef.current = false
     document.documentElement.style.overflow = ''
     // 不再依赖 activeProjectSection，直接用保存的 scrollY
-    returnToSectionRef.current = true as any  // 用来标识"要返回"
+    shouldReturnRef.current = true  // 用来标识"要返回"
     setSelectedProject(null)
   }
 
