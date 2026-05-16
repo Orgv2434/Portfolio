@@ -331,16 +331,14 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
         <motion.section
           className="py-16 px-4 md:px-8"
           initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           <div className="max-w-4xl mx-auto">
             <motion.h3
               className="text-2xl font-bold text-white mb-6 flex items-center gap-2"
               initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              animate={{ opacity: 1, x: 0 }}
             >
               <BookOpen size={28} className="text-cyan-400" />
               相关资源
