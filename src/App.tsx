@@ -126,10 +126,12 @@ function App() {
             window.scrollTo(0, targetY)
             requestAnimationFrame(() => {
               window.scrollTo(0, targetY)
-              // 最后一帧渲染后解锁，精确时序替代固定 600ms
-              isReturningRef.current = false
             })
           })
+          // scroll 事件是异步派发的，600ms 后解锁确保所有 scroll 事件已被锁屏蔽
+          setTimeout(() => {
+            isReturningRef.current = false
+          }, 600)
         })
       })
     }
@@ -324,6 +326,9 @@ function App() {
     }
     infoEnterTransitionLockRef.current = false
     document.documentElement.style.overflow = ''
+    // 重置两个转场冷却，防止 scroll 解锁后立即误触转场动画
+    lastInfoEnterTransitionAtRef.current = Date.now()
+    lastHomePullTransitionAtRef.current = Date.now()
     // 不再依赖 activeProjectSection，直接用保存的 scrollY
     isReturnPendingRef.current = true
     setSelectedProject(null)
