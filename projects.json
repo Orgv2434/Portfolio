@@ -389,6 +389,56 @@
           "数据持久化"
         ]
       }
+    ],
+    "ta": [
+      {
+        "id": "ta-visual-effects",
+        "title": "TA & 视觉效果",
+        "description": "渲染管线、粒子系统、Shader 编程与 UI 系统开发，覆盖 UE5 与 Unity 双引擎视觉效果实现。",
+        "tags": [
+          "Shader",
+          "渲染",
+          "粒子效果",
+          "UE5",
+          "Unity"
+        ],
+        "emoji": "✨",
+        "colors": [
+          "#12081c",
+          "#4a1a6e"
+        ],
+        "isLarge": true,
+        "category": "TA & 美术技术",
+        "skills": [
+          "渲染管线",
+          "粒子系统",
+          "Shader 编程",
+          "UI 系统设计",
+          "动画系统"
+        ],
+        "details": {
+          "role": "技术美术 / TA",
+          "tools": [
+            "UE5 Material Editor",
+            "Unity Shader Graph",
+            "Niagara",
+            "VFX Graph"
+          ],
+          "overview": "负责项目中的技术美术工作，包括自定义渲染管线调整、粒子特效制作和 Shader 开发。",
+          "features": [
+            "自定义 Shader 实现风格化渲染效果",
+            "Niagara / VFX Graph 粒子系统设计",
+            "UI 系统架构与动画集成",
+            "渲染性能优化与 Draw Call 管理"
+          ],
+          "techDetails": [
+            "UE5 Material Blueprint + HLSL 自定义节点",
+            "Niagara 粒子模块化设计",
+            "Unity URP 渲染管线扩展",
+            "GPU Instancing 与 LOD 策略"
+          ]
+        }
+      }
     ]
   },
   "skills": {

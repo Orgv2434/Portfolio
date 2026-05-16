@@ -74,8 +74,8 @@ function App() {
     activeSectionRef.current = activeSection
   }, [activeSection])
 
-  // 用 ref 保存"要返回的 section"，仅在点击返回按钮时写入，避免 activeProjectSection 变化误触发
-  const returnToSectionRef = useRef<SectionType | null>(null)
+  // 返回触发标记（布尔信号，替代原 returnToSectionRef 的 true as any 类型 hack）
+  const isReturnPendingRef = useRef(false)
   // 保存返回的具体 scrollY 位置（不仅是 section，还要记录确切位置）
   const returnToScrollYRef = useRef<number>(0)
   // 返回跳转冷却锁：跳转期间禁止 scroll 事件触发转场动画
@@ -92,8 +92,8 @@ function App() {
 
   // 监听项目详情页关闭，执行返回滚动（只依赖 selectedProject，避免 activeProjectSection 变化误触发）
   useEffect(() => {
-    if (selectedProject === null && returnToSectionRef.current) {
-      returnToSectionRef.current = false
+    if (selectedProject === null && isReturnPendingRef.current) {
+      isReturnPendingRef.current = false
       const targetY = returnToScrollYRef.current
 
       // 用双 rAF 确保 React DOM 已真正 paint 完毕再滚动
@@ -291,7 +291,7 @@ function App() {
     infoEnterTransitionLockRef.current = false
     document.documentElement.style.overflow = ''
     // 不再依赖 activeProjectSection，直接用保存的 scrollY
-    returnToSectionRef.current = true as any  // 用来标识"要返回"
+    isReturnPendingRef.current = true
     setSelectedProject(null)
   }
 
@@ -631,7 +631,9 @@ function App() {
               {isLoading ? (
                 <SkeletonCard isLarge />
               ) : (
-                <BentoCard onClick={handleProjectClick} key="visual-effects" project={data.projects.technology[1]} isLarge section="ta" />
+                data.projects.ta.map((project) => (
+                  <BentoCard onClick={handleProjectClick} key={project.id} project={project} isLarge section="ta" />
+                ))
               )}
             </div>
             <SkillGrid skills={data.skills.ta} emoji="🎨" />
