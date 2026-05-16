@@ -1,5 +1,5 @@
 /** 各区块主色锚点（与 App 背景、WaterDroplets 一致，供转场等复用） */
-export const SECTION_IDS = ['home', 'info', 'featured', 'planning', 'technology', 'ta', 'ai'] as const
+export const SECTION_IDS = ['home', 'info', 'featured', 'planning', 'ta', 'ai'] as const
 export type SectionType = (typeof SECTION_IDS)[number]
 
 export const SECTION_PALETTES: Record<
@@ -10,7 +10,6 @@ export const SECTION_PALETTES: Record<
   info: ['#0a1628', '#124a6e', '#1a6f9a', '#2ec4b6'],
   featured: ['#0d2137', '#1a3f6e', '#6b4c9a', '#d4a574'],
   planning: ['#0a1e2e', '#16506e', '#2a8f8f', '#3dd6c6'],
-  technology: ['#081828', '#0f3a5c', '#1a6f9a', '#4a9fff'],
   ta: ['#12081c', '#2a1050', '#4a1a6e', '#9b6dcc'],
   ai: ['#060a14', '#142a4a', '#2e6aa0', '#6ee7b7'],
 }

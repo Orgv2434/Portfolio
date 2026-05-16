@@ -23,6 +23,7 @@ export interface Project {
   isLarge?: boolean
   videoPath?: string
   coverImage?: string
+  externalUrl?: string
   details?: ProjectDetails
   skills?: string[]
   topics?: string[]

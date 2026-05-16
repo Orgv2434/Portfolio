@@ -5,7 +5,6 @@ import {
   FolderOpen,
   Star,
   PenTool,
-  Code,
   Palette,
   Brain,
   Github as GithubIcon,
@@ -36,7 +35,6 @@ const SECTION_ICONS: Record<SectionType, LucideIcon> = {
   info: FolderOpen,
   featured: Star,
   planning: PenTool,
-  technology: Code,
   ta: Palette,
   ai: Brain,
 }
@@ -46,7 +44,6 @@ const SECTION_LABELS: Record<SectionType, string> = {
   info: '信息页',
   featured: '项目视频',
   planning: '策划能力',
-  technology: '技术开发',
   ta: 'TA & 美术',
   ai: 'AI 应用',
 }
@@ -285,7 +282,6 @@ function App() {
       info: '浅海',
       featured: '珊瑚礁',
       planning: '深海平原',
-      technology: '热泉喷口',
       ta: '深渊',
       ai: '海沟'
     }
@@ -301,6 +297,11 @@ function App() {
   }
 
   const handleProjectClick = (project: Project, section?: string) => {
+    if (project.externalUrl) {
+      window.open(project.externalUrl, '_blank', 'noopener,noreferrer')
+      return
+    }
+
     showToast(`已打开项目: ${project.title}`, 'info')
 
     // 如果传递了section参数，直接使用；否则用检测的值
@@ -341,7 +342,6 @@ function App() {
       info: '浅海',
       featured: '珊瑚礁',
       planning: '深海平原',
-      technology: '热泉喷口',
       ta: '深渊',
       ai: '海沟'
     }
@@ -667,38 +667,6 @@ function App() {
               )}
             </div>
             <SkillGrid skills={data.skills.planning} emoji="📋" />
-          </motion.div>
-
-          <motion.div
-            key="technology"
-            id="technology"
-            className="waterfall-section"
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl font-bold mb-8 text-white" style={{ textShadow: '0 0 20px rgba(0, 212, 255, 0.5)' }}>🌡️ 热泉喷口 - 技术开发</h2>
-            <div className="bento-grid">
-              {isLoading ? (
-                <>
-                  <SkeletonCard isLarge />
-                  <SkeletonCard />
-                </>
-              ) : (
-                <>
-                  {data.projects.technology.map((project, idx) => (
-                    <BentoCard
-                      onClick={handleProjectClick}
-                      key={project.id}
-                      project={project}
-                      isLarge={idx === 0}
-                      section="technology"
-                    />
-                  ))}
-                </>
-              )}
-            </div>
-            <SkillGrid skills={data.skills.programming} emoji="💻" />
           </motion.div>
 
           <motion.div
