@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, lazy, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Home,
@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import data from '../projects.json'
 import { ProjectDetail } from './pages/ProjectDetail'
-import { WaterDroplets } from './components/WaterDroplets'
+const WaterDroplets = lazy(() => import('./components/WaterDroplets').then(m => ({ default: m.WaterDroplets })))
 import { SparklingWater } from './components/SparklingWater'
 import { DepthIndicator } from './components/DepthIndicator'
 import { ScrollHint } from './components/ScrollHint'
@@ -338,11 +338,13 @@ function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <WaterDroplets
-              title="Nanako's Profile"
-              subtitle=""
-              colors={["#87ceeb", "#5bb8e8", "#1565c0", "#0a1628"]}
-            />
+            <Suspense fallback={null}>
+              <WaterDroplets
+                title="Nanako's Profile"
+                subtitle=""
+                colors={["#87ceeb", "#5bb8e8", "#1565c0", "#0a1628"]}
+              />
+            </Suspense>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,9 +1,11 @@
+import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { VideoPlayer } from '../components/ProjectDetail/VideoPlayer';
 import { ProjectInfo } from '../components/ProjectDetail/ProjectInfo';
-import { WaterDroplets } from '../components/WaterDroplets';
 import type { Project } from '../types';
+
+const WaterDroplets = lazy(() => import('../components/WaterDroplets').then(m => ({ default: m.WaterDroplets })));
 
 interface ProjectDetailProps {
   project: Project;
@@ -21,11 +23,13 @@ export const ProjectDetail = ({ project, onBack, returnToSection = '首页' }: P
       exit={{ opacity: 0 }}
     >
       {/* 水滴效果背景 */}
-      <WaterDroplets
-        title={project.title}
-        subtitle={project.description}
-        colors={project.colors}
-      />
+      <Suspense fallback={null}>
+        <WaterDroplets
+          title={project.title}
+          subtitle={project.description}
+          colors={project.colors}
+        />
+      </Suspense>
 
       {/* 返回按钮 */}
       <motion.button
