@@ -10,7 +10,8 @@ import {
   Brain,
   Github as GithubIcon,
   Mail,
-  Linkedin
+  Linkedin,
+  type LucideIcon
 } from 'lucide-react'
 import data from '../projects.json'
 import { ProjectDetail } from './pages/ProjectDetail'
@@ -30,15 +31,31 @@ interface Toast {
   type: 'success' | 'error' | 'info'
 }
 
-const navItems = [
-  { id: 'home' as SectionType, icon: Home, label: '首页' },
-  { id: 'info' as SectionType, icon: FolderOpen, label: '信息页' },
-  { id: 'featured' as SectionType, icon: Star, label: '项目视频' },
-  { id: 'planning' as SectionType, icon: PenTool, label: '策划能力' },
-  { id: 'technology' as SectionType, icon: Code, label: '技术开发' },
-  { id: 'ta' as SectionType, icon: Palette, label: 'TA & 美术' },
-  { id: 'ai' as SectionType, icon: Brain, label: 'AI 应用' },
-]
+const SECTION_ICONS: Record<SectionType, LucideIcon> = {
+  home: Home,
+  info: FolderOpen,
+  featured: Star,
+  planning: PenTool,
+  technology: Code,
+  ta: Palette,
+  ai: Brain,
+}
+
+const SECTION_LABELS: Record<SectionType, string> = {
+  home: '首页',
+  info: '信息页',
+  featured: '项目视频',
+  planning: '策划能力',
+  technology: '技术开发',
+  ta: 'TA & 美术',
+  ai: 'AI 应用',
+}
+
+const navItems = SECTION_IDS.map((id) => ({
+  id,
+  icon: SECTION_ICONS[id],
+  label: SECTION_LABELS[id],
+}))
 
 function App() {
   const [activeSection, setActiveSection] = useState<SectionType>('home')
