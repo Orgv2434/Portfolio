@@ -233,7 +233,7 @@ function App() {
         setShowSidebar(false)
       }
 
-      const sections: SectionType[] = ['home', 'info', 'featured', 'planning', 'technology', 'ta', 'ai']
+      const sections: SectionType[] = ['home', 'info', 'featured', 'planning', 'ta', 'ai']
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i]
         const element = document.getElementById(section)
