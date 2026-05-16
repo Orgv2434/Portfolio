@@ -86,8 +86,11 @@ function App() {
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual'
     }
-    const timer = setTimeout(() => setIsLoading(false), 1500)
-    return () => clearTimeout(timer)
+    // 等一帧确保 DOM 已绘制，保留入场动效但移除 1.5s 硬编码等待
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setIsLoading(false))
+    })
+    return () => {}
   }, [])
 
   // 监听项目详情页关闭，执行返回滚动（只依赖 selectedProject，避免 activeProjectSection 变化误触发）
@@ -484,6 +487,27 @@ function App() {
             animate={{ opacity: depth > 200 ? 1 : 1 }}
             transition={{ duration: 0.8 }}
           >
+            <motion.div
+              className="text-center px-8"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.3 }}
+            >
+              <h1 className="text-5xl md:text-7xl font-bold text-white mb-4"
+                style={{ textShadow: '0 0 40px rgba(0,212,255,0.8)' }}>
+                {data.profile.name}
+              </h1>
+              <p className="text-xl text-white/70 mb-8">{data.profile.title}</p>
+              <div className="flex flex-wrap gap-3 justify-center">
+                {data.profile.tags.map((tag, idx) => (
+                  <span key={idx}
+                    className="px-4 py-2 rounded-full text-sm text-white/80 border border-white/20"
+                    style={{ background: 'rgba(0,212,255,0.1)' }}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
           </motion.div>
 
           <motion.div
@@ -596,8 +620,15 @@ function App() {
                 </>
               ) : (
                 <>
-                  <BentoCard onClick={handleProjectClick} key="client-dev" project={data.projects.technology[0]} isLarge section="technology" />
-                  <BentoCard onClick={handleProjectClick} key="tech-other" project={data.projects.technology[1]} section="technology" />
+                  {data.projects.technology.map((project, idx) => (
+                    <BentoCard
+                      onClick={handleProjectClick}
+                      key={project.id}
+                      project={project}
+                      isLarge={idx === 0}
+                      section="technology"
+                    />
+                  ))}
                 </>
               )}
             </div>
