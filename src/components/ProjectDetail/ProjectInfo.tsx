@@ -328,21 +328,12 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
 
       {/* 资源链接 */}
       {(details.demoUrl || details.githubUrl || details.documentUrl) && (
-        <motion.section
-          className="py-16 px-4 md:px-8"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <section className="py-16 px-4 md:px-8">
           <div className="max-w-4xl mx-auto">
-            <motion.h3
-              className="text-2xl font-bold text-white mb-6 flex items-center gap-2"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-            >
+            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
               <BookOpen size={28} className="text-cyan-400" />
               相关资源
-            </motion.h3>
+            </h3>
             <div className="flex flex-wrap gap-4 justify-center">
               {details.demoUrl && (
                 <motion.a
@@ -353,9 +344,6 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                   style={{ background: `linear-gradient(135deg, ${colors[0]}, ${colors[1]})` }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
                 >
                   <ExternalLink size={18} />
                   在线演示
@@ -369,9 +357,6 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                   className="flex items-center gap-2 px-6 py-3 rounded-full font-medium bg-white/10 text-white hover:bg-white/20 transition border border-white/20"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
                 >
                   <GithubIcon size={18} />
                   GitHub
@@ -385,9 +370,6 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                   className="flex items-center gap-2 px-6 py-3 rounded-full font-medium text-cyan-400 hover:text-cyan-300 transition border border-cyan-400/30 hover:border-cyan-300/50"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.2 }}
                 >
                   <BookOpen size={18} />
                   详细文档
@@ -395,7 +377,7 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
               )}
             </div>
           </div>
-        </motion.section>
+        </section>
       )}
     </div>
   );
