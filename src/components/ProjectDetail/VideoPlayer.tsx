@@ -134,8 +134,19 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // 如果是外部链接，显示 iframe 或链接按钮
+  // 从 URL 提取 bilibili BV 号
+  const extractBvid = (url: string): string | null => {
+    const match = url.match(/(?:BV|bv)[a-zA-Z0-9]+/) ?? url.match(/b23\.tv\/([a-zA-Z0-9]+)/);
+    return match ? match[0] : null;
+  };
+
+  // 如果是外部链接，显示 bilibili iframe 或链接按钮
   if (isExternalLink) {
+    const bvid = extractBvid(videoPath);
+    const embedUrl = bvid
+      ? `https://player.bilibili.com/player.html?bvid=${bvid}&high_quality=1&autoplay=0`
+      : null;
+
     return (
       <motion.div
         ref={containerRef}
@@ -143,45 +154,43 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        style={{
-          background: `linear-gradient(135deg, ${colors[0]}80, ${colors[1]}80)`,
-        }}
+        style={{ background: `linear-gradient(135deg, ${colors[0]}80, ${colors[1]}80)` }}
       >
-        {/* 背景渐变层 */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 100%)`,
-          }}
-        />
-
-        {/* 显示标题和打开链接按钮 */}
-        <motion.div
-          className="absolute inset-0 flex flex-col items-center justify-center text-white"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          <motion.h1
-            className="text-4xl md:text-6xl font-bold mb-8 text-center px-4"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
+        {embedUrl ? (
+          <iframe
+            src={embedUrl}
+            className="w-full h-full border-0"
+            allow="fullscreen"
+            title={title}
+          />
+        ) : (
+          <motion.div
+            className="absolute inset-0 flex flex-col items-center justify-center text-white"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
           >
-            {title}
-          </motion.h1>
-          <motion.a
-            href={videoPath}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-8 py-4 bg-white text-black rounded-lg font-semibold hover:bg-gray-100 transition"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            点击打开视频
-          </motion.a>
-        </motion.div>
+            <motion.h1
+              className="text-4xl md:text-6xl font-bold mb-8 text-center px-4"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              {title}
+            </motion.h1>
+            <motion.a
+              href={videoPath}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-4 bg-white text-black rounded-lg font-semibold hover:bg-gray-100 transition"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              点击打开视频
+            </motion.a>
+          </motion.div>
+        )}
       </motion.div>
-    )
+    );
   }
 
   return (
