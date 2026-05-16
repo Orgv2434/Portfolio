@@ -4,134 +4,263 @@
     "title": "全栈创意人",
     "subtitle": "技术策划 | UE 客户端 | Unity 客户端",
     "bio": "高复合型人才，具备策划、技术、TA 的全面能力",
-    "tags": ["策划", "技术", "TA", "AI"]
+    "tags": [
+      "策划",
+      "技术",
+      "TA",
+      "AI"
+    ]
   },
   "projects": {
     "featured": [
       {
         "id": "dialog-box",
         "title": "某天头上长出对话框",
-        "description": "UE 策划技术动画UI全栈实现，完整的对话系统。包括对话树设计、文案策划、UI交互、动画效果。完整的策划案已完成，包含详细的剧情设计和角色对话。",
+        "description": "3D 俯视角剧情解谜游戏，以 \"语言降维\" 与 \"对话框革命\" 为世界观核心。玩家通过文字收集、语句重组、对话解谜展开沉浸交互，在探索中拼凑真相、推进剧情、完成逃离。",
         "category": "UE5 对话系统",
-        "tags": ["UE5", "对话系统", "文案", "UI", "动画", "剧情设计"],
+        "tags": [
+          "UE5",
+          "对话系统",
+          "文案",
+          "UI",
+          "动画",
+          "剧情设计"
+        ],
         "emoji": "💬",
-        "colors": ["#ffd93d", "#ffb347"],
+        "colors": [
+          "#ffd93d",
+          "#ffb347"
+        ],
         "isLarge": true,
         "videoPath": "/videos/dialog-box.mp4",
         "details": {
           "role": "全栈",
           "engine": "UE5",
-          "tools": ["Unreal Engine 5", "Dialogue System", "Blueprints"],
+          "tools": [
+            "Unreal Engine 5",
+            "Dialogue System",
+            "Blueprints"
+          ],
           "achievements": [
             "设计完整的对话树系统架构",
-            "实现精美的对话 UI 和动画效果",
-            "完成全部剧情文案策划",
-            "实现分支对话和剧情选择功能"
+            "创新文字拖拽收集 + 背包组合机制",
+            "实现动态运镜对话与富文本 3D UI",
+            "碎片化叙事与高沉浸氛围设计"
           ],
           "demoUrl": "https://x020k2esgn2.feishu.cn/wiki/QOkiwMKSkiKbZFk0qjicuxuEn5d?from=from_copylink",
           "githubUrl": "https://github.com/your-name/dialog-box",
           "documentUrl": "https://x020k2esgn2.feishu.cn/wiki/QOkiwMKSkiKbZFk0qjicuxuEn5d?from=from_copylink",
-          "overview": "《某天头上长出对话框》是一款基于 UE5 引擎开发的叙事驱动型游戏项目。玩家将扮演一位突然获得与世界对话能力的主角，通过与各种物品、NPC 的对话来解开谜题、推进剧情。",
-          "story": "故事发生在一个平凡的小镇，主角某天醒来发现自己能看到漂浮在人们和物品上方的对话框。这些对话框显示着他们的真实想法和隐藏的故事。随着探索的深入，主角逐渐发现这个能力背后隐藏着一个关于小镇历史的巨大秘密。",
+          "overview": "近未来人类被强制将语言三维情绪坍缩为二维对话框，拒绝改造者被称为 \"异语人\"。AI 通过语言系统不断植入记忆，世界在 \"更新\" 中走向控制与异化。",
+          "story": "序章：主角高烧后发现人人头顶出现对话框，踏入怪异教室。\n第一章：收集文字、解锁笔记本、见证异语人奎因的悲剧。\n第二章：潜入实验室，利用道具伪装、破解机关。\n第三章：长廊逃亡，躲避追逐与障碍，最终逃出。",
           "features": [
-            "创新的对话系统，与物品和NPC互动",
-            "分支剧情设计，玩家选择影响结局",
-            "精美的视觉效果和动画",
-            "完整的角色塑造和故事线"
+            "创新文字拖拽收集 + 背包组合解谜机制",
+            "动态运镜对话，摄像机自动对准说话者",
+            "富文本 3D UI，实时面向镜头交互",
+            "碎片化叙事，以日记、海报、对话逐步揭露世界观",
+            "高沉浸氛围，融合奇异人生、极乐迪斯科等风格"
           ],
           "techDetails": [
-            "基于 UE5 Dialogue System 实现对话树",
-            "自定义 UI Widget 实现对话界面",
-            "状态机控制角色动画",
-            "数据驱动的剧情系统"
+            "对话交互、文字解密、物品使用、伪装潜入",
+            "警报机关、跑酷逃亡等丰富环节",
+            "环境叙事 + 动态拼图核心乐趣",
+            "在探索中推进剧情、完成逃离"
           ]
-        }
+        },
+        "coverImage": "/covers/dialog-box.png"
       },
       {
         "id": "eat-fish",
         "title": "Eat Your Fish",
-        "description": "Unity 策划技术动画UI全栈实现。展示完整的游戏开发能力从玩法设计到技术实现再到视觉表现。",
-        "category": "Unity 游戏",
-        "tags": ["Unity", "玩法", "技术", "动画", "UI"],
+        "description": "一款手绘→AI 生成 3D 模型的创意吞噬对战游戏。玩家画出专属小鱼，自动生成 3D 模型进入水族馆，通过吞噬成长、争夺技能、躲避天敌，从弱小鱼苗成长为顶级掠食者。",
+        "category": "Unity 游戏 | AI 3D 生成",
+        "tags": [
+          "Unity",
+          "玩法",
+          "AI",
+          "3D生成",
+          "Tripo3D"
+        ],
         "emoji": "🐠",
-        "colors": ["#6bcf7f", "#4fc3f7"],
+        "colors": [
+          "#6bcf7f",
+          "#4fc3f7"
+        ],
         "isLarge": true,
         "videoPath": "/videos/eat-your-fish.mp4",
         "details": {
-          "role": "全栈",
+          "role": "主策划 + 全栈开发",
           "engine": "Unity",
-          "tools": ["Unity Engine", "Visual Studio"],
+          "tools": [
+            "Unity Engine",
+            "Tripo3D AI",
+            "Visual Studio"
+          ],
           "achievements": [
-            "完整的游戏玩法设计",
-            "C# 技术实现",
-            "UI 和动画制作"
+            "AI 手绘转 3D 创意生成机制",
+            "创意养成系统设计与实现",
+            "复杂的挡位成长体系与技能对抗",
+            "吞噬继承机制与完整游戏闭环"
           ],
           "demoUrl": "https://example.com/eat-fish",
-          "githubUrl": "https://github.com/your-name/eat-fish"
-        }
+          "githubUrl": "https://github.com/your-name/eat-fish",
+          "overview": "一款独特的 AI 手绘转 3D 创意游戏，融合了艺术创作与游戏对战。使用 Tripo3D AI 技术一键生成玩家自定义鱼模型，在开放世界水族馆中展开激烈对战。",
+          "features": [
+            "AI 手绘转 3D：Tripo3D 一键生成玩家自定义鱼模型",
+            "创意养成：画什么鱼，就用什么鱼战斗",
+            "挡位成长体系：白→黄→紫→黑→红，体型越大越强",
+            "技能策略对抗：冲刺 / 护盾 / 伪装 / 经验翻倍，战术丰富",
+            "吞噬继承机制：吃掉技能鱼即可继承其技能"
+          ],
+          "techDetails": [
+            "维持饥饿度，不断吞噬小鱼与玩家成长",
+            "高挡位可吞噬低挡位；同挡位靠 \"咬尾\" 反杀",
+            "拾取技能鱼获得主动 Buff，策略逃生 / 反杀",
+            "体型越大能力越强，但操控难度随之上升"
+          ]
+        },
+        "coverImage": "/covers/eat-fish.png"
       },
       {
         "id": "town-police",
         "title": "小镇警察",
-        "description": "完整的游戏项目宣传视频。展现从剧情、角色、美术到交互的全面设计。",
-        "category": "游戏项目",
-        "tags": ["策划", "美术", "交互", "剧情"],
+        "description": "逃离喧嚣都市，成为宁静小镇唯一的警察。在限定时间内守护小镇和平，帮助居民处理日常琐事或及时制止罪犯。这是一款轻松治愈的休闲益智小游戏，用简单快乐的玩法，守护属于你的小镇烟火日常。",
+        "category": "休闲益智游戏",
+        "tags": [
+          "策划",
+          "游戏设计",
+          "交互",
+          "叙事"
+        ],
         "emoji": "🚔",
-        "colors": ["#4d96ff", "#3b82f6"],
+        "colors": [
+          "#4d96ff",
+          "#3b82f6"
+        ],
         "isLarge": true,
         "videoPath": "/videos/town-police.mp4",
         "details": {
-          "role": "全栈",
-          "tools": ["Unreal Engine 5", "Unity"],
+          "role": "全栈设计",
+          "tools": [
+            "Unreal Engine 5",
+            "Unity"
+          ],
           "achievements": [
+            "完整的游戏世界观与设定",
+            "双重任务体系设计（帮助 + 制止）",
+            "动态居民与罪犯刷新系统",
+            "风评与金币奖励机制"
+          ],
+          "overview": "小镇拥有繁忙街道、安静公园与隐秘小巷，每个角落都可能藏着需要帮助的居民，或是伺机捣乱的罪犯。",
+          "features": [
+            "帮助居民处理日常琐事，传递温暖，维护小镇安宁",
+            "及时制止并驱逐罪犯，守护小镇秩序",
+            "风评提升能解锁高级任务道具与居民专属评价",
+            "金币可用于购买各类道具",
+            "小镇居民与罪犯每日随机刷新，带来不一样的日常执勤体验"
+          ],
+          "techDetails": [
             "完整的剧情和角色设计",
             "精美的美术表现",
             "丰富的交互系统"
           ]
-        }
+        },
+        "coverImage": "/covers/town-police.png"
       },
       {
         "id": "western-tavern",
-        "title": "西部酒馆",
-        "description": "西部主题的交互式游戏项目。结合策划、技术、美术的完整游戏体验。",
-        "category": "游戏项目",
-        "tags": ["策划", "美术", "技术", "交互"],
+        "title": "西部酒馆 - 俄罗斯轮盘",
+        "description": "一款仅用鼠标滚轮即可完成的极简策略对战游戏。以俄罗斯轮盘为核心，玩家在固定子弹规则下进行装弹、选择开枪对象，靠运气与心理博弈决出胜负，用最简单操作实现最刺激的对抗体验。",
+        "category": "单按钮策略对战",
+        "tags": [
+          "策略",
+          "对战",
+          "极简设计",
+          "心理博弈"
+        ],
         "emoji": "🤠",
-        "colors": ["#ff9844", "#ffb347"],
+        "colors": [
+          "#ff9844",
+          "#ffb347"
+        ],
+        "isLarge": true,
         "videoPath": "/videos/western-tavern.mp4",
         "details": {
-          "role": "全栈",
-          "tools": ["Unreal Engine 5", "Unity"],
+          "role": "策划和项目负责人",
+          "engine": "UE",
+          "tools": [
+            "Unreal Engine 5"
+          ],
           "achievements": [
-            "独特的西部风格设计",
-            "沉浸式的游戏环境",
-            "丰富的 NPC 互动"
+            "纯单按钮操作设计，上手零门槛",
+            "轻量策略博弈机制设计",
+            "强反馈节奏的视听效果",
+            "完整对战闭环实现"
+          ],
+          "overview": "类型：单按钮双人策略对战｜核心亮点：纯单按钮操作、轻量策略博弈、强反馈节奏",
+          "features": [
+            "纯单按钮操作：全程只用鼠标滚轮，上手零门槛",
+            "轻量策略博弈：装弹数量 + 射击对象组合，战术与运气并存",
+            "强反馈节奏：开枪 / 中弹 / 转膛视听效果拉满",
+            "完整对战闭环：双人对抗、血量、回合、胜负清晰"
+          ],
+          "techDetails": [
+            "双方各 3 点生命值，共用 8 发子弹",
+            "每回合选择装弹 1–3 枚",
+            "选择对自己开枪 / 对对方开枪",
+            "中枪则目标扣血，空枪则回合切换",
+            "一方生命值归 0 即落败"
           ]
-        }
+        },
+        "coverImage": "/covers/western-tavern.png"
       },
       {
         "id": "tassos",
         "title": "Tassos",
-        "description": "大一生一个月开发的动作游戏。展示完整的游戏从策划、程序到美术的实现能力。",
-        "category": "动作游戏",
-        "tags": ["动作游戏", "游戏实况", "完整项目"],
+        "description": "一款 2D 动作游戏，玩家通过键盘操作主角与 Boss 进行对战。大一时期一个月内完成的完整游戏开发项目，展示了从策划、程序到美术的全面实现能力。",
+        "category": "2D 动作游戏",
+        "tags": [
+          "动作游戏",
+          "2D",
+          "快速开发",
+          "完整项目"
+        ],
         "emoji": "⚔️",
-        "colors": ["#ff6b6b", "#ff9844"],
+        "colors": [
+          "#ff6b6b",
+          "#ff9844"
+        ],
         "isLarge": false,
         "videoPath": "https://b23.tv/KhSZjHl",
         "details": {
-          "role": "全栈",
+          "role": "全栈开发",
           "engine": "自主引擎/Unity",
-          "tools": ["游戏引擎", "美术工具"],
+          "tools": [
+            "游戏引擎",
+            "美术工具"
+          ],
           "achievements": [
             "一个月完成完整游戏开发",
-            "实现完整的动作游戏玩法",
-            "包含角色、敌人、关卡设计",
+            "实现完整的 2D 动作游戏玩法",
+            "包含主角、Boss 敌人、关卡设计",
             "发布实况演示视频"
+          ],
+          "overview": "大一生一个月开发的动作游戏，展示了快速学习和全栈开发能力。通过键盘操作与 Boss 进行精彩对战。",
+          "features": [
+            "完整的 2D 动作游戏玩法设计",
+            "Boss 对战系统",
+            "关卡设计与游戏平衡",
+            "流畅的操作手感"
+          ],
+          "techDetails": [
+            "动作游戏核心玩法实现",
+            "角色控制与碰撞检测",
+            "敌人 AI 与战斗系统",
+            "一个月快速迭代完成"
           ],
           "videoUrl": "https://b23.tv/KhSZjHl",
           "demoUrl": "https://b23.tv/KhSZjHl"
-        }
+        },
+        "coverImage": "/covers/tassos.png"
       }
     ],
     "planning": [
@@ -139,17 +268,31 @@
         "id": "task-system",
         "title": "任务系统设计",
         "description": "完整的任务管理系统和数据结构设计",
-        "tags": ["任务系统", "数据设计", "关卡设计"],
+        "tags": [
+          "任务系统",
+          "数据设计",
+          "关卡设计"
+        ],
         "emoji": "📝",
-        "colors": ["#6bcf7f", "#4fc3f7"]
+        "colors": [
+          "#6bcf7f",
+          "#4fc3f7"
+        ]
       },
       {
         "id": "gameplay-design",
         "title": "玩法策划文案",
         "description": "多个游戏项目的核心玩法和文案策划",
-        "tags": ["玩法策划", "文案", "关卡设计"],
+        "tags": [
+          "玩法策划",
+          "文案",
+          "关卡设计"
+        ],
         "emoji": "🎮",
-        "colors": ["#ffd93d", "#ffb347"]
+        "colors": [
+          "#ffd93d",
+          "#ffb347"
+        ]
       }
     ],
     "technology": [
@@ -157,9 +300,18 @@
         "id": "client-dev",
         "title": "客户端开发",
         "description": "C#、C++、蓝图多语言开发经验",
-        "tags": ["C#", "C++", "蓝图", "Unity", "UE5"],
+        "tags": [
+          "C#",
+          "C++",
+          "蓝图",
+          "Unity",
+          "UE5"
+        ],
         "emoji": "⚙️",
-        "colors": ["#4d96ff", "#3b82f6"],
+        "colors": [
+          "#4d96ff",
+          "#3b82f6"
+        ],
         "skills": [
           "C++ (UE5)",
           "C# (Unity)",
@@ -172,9 +324,17 @@
         "id": "visual-effects",
         "title": "TA & 视觉效果",
         "description": "渲染、画面效果、UI系统开发",
-        "tags": ["渲染", "粒子效果", "UI系统", "动画"],
+        "tags": [
+          "渲染",
+          "粒子效果",
+          "UI系统",
+          "动画"
+        ],
         "emoji": "✨",
-        "colors": ["#ff6b6b", "#ee5a6f"],
+        "colors": [
+          "#ff6b6b",
+          "#ee5a6f"
+        ],
         "skills": [
           "渲染管线",
           "粒子系统",
@@ -189,10 +349,21 @@
         "id": "ai-integration",
         "title": "AI 接入项目",
         "description": "将 AI 能力整合到游戏项目中的实践",
-        "tags": ["AI", "机器学习", "游戏AI"],
+        "tags": [
+          "AI",
+          "机器学习",
+          "游戏AI"
+        ],
         "emoji": "🧠",
-        "colors": ["#6bcf7f", "#4fc3f7"],
-        "skills": ["游戏 AI", "机器学习", "NPC 行为设计"]
+        "colors": [
+          "#6bcf7f",
+          "#4fc3f7"
+        ],
+        "skills": [
+          "游戏 AI",
+          "机器学习",
+          "NPC 行为设计"
+        ]
       }
     ],
     "knowledge": [
@@ -200,9 +371,16 @@
         "id": "game-dev-basics",
         "title": "游戏开发基础",
         "description": "游戏引擎原理、系统设计、最佳实践",
-        "tags": ["学习", "基础", "最佳实践"],
+        "tags": [
+          "学习",
+          "基础",
+          "最佳实践"
+        ],
         "emoji": "📖",
-        "colors": ["#ffd93d", "#ffb347"],
+        "colors": [
+          "#ffd93d",
+          "#ffb347"
+        ],
         "topics": [
           "游戏架构设计",
           "性能优化",
