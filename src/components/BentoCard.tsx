@@ -51,7 +51,7 @@ export const BentoCard = ({ project, isLarge, section, onClick }: BentoCardProps
 
   return (
     <motion.div
-      className={`glass bento-item ${isLarge ? 'large' : ''}`}
+      className={`glass bento-item ${isLarge ? 'large' : ''} focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:outline-none`}
       layout
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -60,6 +60,10 @@ export const BentoCard = ({ project, isLarge, section, onClick }: BentoCardProps
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onClick={() => onClick(project, section)}
+      tabIndex={0}
+      role="button"
+      aria-label={`打开项目：${project.title}`}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(project, section) }}
       style={{ padding: '1.5rem' }}
     >
       <div
