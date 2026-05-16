@@ -16,13 +16,15 @@ export const BentoCard = ({ project, isLarge, section, onClick }: BentoCardProps
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    if (!project.videoPath) return
+    if (!project.videoPath || project.videoPath.startsWith('http')) return
 
+    let cancelled = false
     const video = document.createElement('video')
     video.crossOrigin = 'anonymous'
     video.src = project.videoPath
 
     const extractThumbnail = () => {
+      if (cancelled) return
       try {
         const canvas = document.createElement('canvas')
         canvas.width = video.videoWidth
@@ -35,11 +37,16 @@ export const BentoCard = ({ project, isLarge, section, onClick }: BentoCardProps
       } catch (error) {
         console.error('Failed to extract thumbnail:', error)
       }
-      video.removeEventListener('loadeddata', extractThumbnail)
     }
 
     video.addEventListener('loadeddata', extractThumbnail, { once: true })
     video.load()
+
+    return () => {
+      cancelled = true
+      video.removeEventListener('loadeddata', extractThumbnail)
+      video.src = ''
+    }
   }, [project.videoPath])
 
   return (
@@ -60,10 +67,12 @@ export const BentoCard = ({ project, isLarge, section, onClick }: BentoCardProps
         style={{
           background: thumbnailUrl
             ? `url(${thumbnailUrl}) center / cover`
+            : project.coverImage
+            ? `url(${project.coverImage}) center / cover`
             : `linear-gradient(135deg, ${project.colors[0]}, ${project.colors[1]})`,
         }}
       >
-        {!thumbnailUrl && (
+        {!thumbnailUrl && !project.coverImage && (
           <div className="absolute inset-0 flex items-center justify-center">
             {project.emoji}
           </div>
