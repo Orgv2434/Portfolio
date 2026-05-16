@@ -71,6 +71,38 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
         </div>
       </motion.section>
 
+      {/* 项目概览 */}
+      {details.overview && (
+        <motion.section
+          className="py-16 px-4 md:px-8"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="max-w-4xl mx-auto">
+            <motion.h3
+              className="text-2xl font-bold text-white mb-6 flex items-center gap-2"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <span className="text-3xl">📋</span>
+              项目概览
+            </motion.h3>
+            <motion.div
+              className="glass rounded-2xl p-6 md:p-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <p className="text-white/70 text-lg leading-relaxed whitespace-pre-wrap">{details.overview}</p>
+            </motion.div>
+          </div>
+        </motion.section>
+      )}
+
       {/* 故事背景 */}
       {details.story && (
         <motion.section
