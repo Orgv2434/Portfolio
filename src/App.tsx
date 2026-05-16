@@ -581,18 +581,25 @@ function App() {
             
             <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
               <h3 className="text-xl font-bold mb-6 text-white/90">关于我</h3>
-              <p className="text-white/80 leading-relaxed text-lg">
-                {data.profile.intro}
-              </p>
+              {data.profile.intro.split('\n').map((line, idx) => (
+                <p key={idx} className="text-white/80 leading-relaxed text-lg mb-2 last:mb-0">{line}</p>
+              ))}
             </div>
 
             <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
               <h3 className="text-xl font-bold mb-6 text-white/90">核心能力</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {[...data.skills.planning, ...data.skills.programming, ...data.skills.ta].slice(0, 6).map((skill, idx) => (
-                  <span key={idx} className="px-4 py-2 bg-white/10 text-white rounded-full text-sm backdrop-blur-sm">
-                    {skill}
-                  </span>
+              <div className="space-y-4">
+                {data.profile.abilities.map((group, idx) => (
+                  <div key={idx} className="flex flex-wrap items-center gap-2">
+                    <span className="text-white/50 text-sm w-24 shrink-0">{group.category}</span>
+                    <div className="flex flex-wrap gap-2">
+                      {group.items.map((item, i) => (
+                        <span key={i} className="px-3 py-1 bg-white/10 text-white/80 rounded-full text-sm">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -607,7 +614,7 @@ function App() {
                 </div>
                 <div>
                   <p className="text-white/80 leading-relaxed">邮箱：{data.profile.email}</p>
-                  <p className="text-white/80 leading-relaxed mt-2">电话：{data.profile.phone}</p>
+                  {data.profile.phone && <p className="text-white/80 leading-relaxed mt-2">电话：{data.profile.phone}</p>}
                   <p className="text-white/80 leading-relaxed mt-2">所在地：{data.profile.location}</p>
                 </div>
               </div>
