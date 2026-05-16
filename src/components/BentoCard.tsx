@@ -16,6 +16,8 @@ export const BentoCard = ({ project, isLarge, section, onClick }: BentoCardProps
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
+    // 有静态封面图时直接使用，无需截帧
+    if (project.coverImage) return
     if (!project.videoPath || project.videoPath.startsWith('http')) return
 
     let cancelled = false
@@ -47,7 +49,7 @@ export const BentoCard = ({ project, isLarge, section, onClick }: BentoCardProps
       video.removeEventListener('loadeddata', extractThumbnail)
       video.src = ''
     }
-  }, [project.videoPath])
+  }, [project.videoPath, project.coverImage])
 
   return (
     <motion.div
@@ -69,21 +71,16 @@ export const BentoCard = ({ project, isLarge, section, onClick }: BentoCardProps
       <div
         className={`bento-image ${isLarge ? 'bento-image-large' : 'bento-image-normal'} relative overflow-hidden`}
         style={{
-          background: thumbnailUrl
-            ? `url(${thumbnailUrl}) center / cover`
-            : project.coverImage
+          background: project.coverImage
             ? `url(${project.coverImage}) center / cover`
+            : thumbnailUrl
+            ? `url(${thumbnailUrl}) center / cover`
             : `linear-gradient(135deg, ${project.colors[0]}, ${project.colors[1]})`,
         }}
       >
-        {!thumbnailUrl && !project.coverImage && (
+        {!project.coverImage && !thumbnailUrl && (
           <div className="absolute inset-0 flex items-center justify-center">
             {project.emoji}
-          </div>
-        )}
-        {thumbnailUrl && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 hover:opacity-100 transition-opacity duration-300">
-            <span className="text-white text-3xl md:text-4xl">{project.emoji}</span>
           </div>
         )}
       </div>
