@@ -49,6 +49,7 @@ function App() {
   const [depth, setDepth] = useState(0)
   const [showScrollHint, setShowScrollHint] = useState(true)
   const [showSidebar, setShowSidebar] = useState(false)
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false)
   
   // 滚动状态管理
   const [isAtTop, setIsAtTop] = useState(true)           // 是否在顶部
@@ -396,8 +397,27 @@ function App() {
         )}
       </AnimatePresence>
 
-      <motion.aside 
-        className="sidebar"
+      {/* 移动端侧边栏遮罩 */}
+      {showMobileSidebar && (
+        <div
+          className="fixed inset-0 z-30 bg-black/40 md:hidden"
+          onClick={() => setShowMobileSidebar(false)}
+        />
+      )}
+
+      {/* 移动端汉堡按钮 */}
+      {showSidebar && (
+        <button
+          className="fixed bottom-6 right-6 z-50 md:hidden w-12 h-12 glass rounded-full flex items-center justify-center text-white shadow-lg text-xl"
+          onClick={() => setShowMobileSidebar(v => !v)}
+          aria-label="打开导航"
+        >
+          {showMobileSidebar ? '✕' : '☰'}
+        </button>
+      )}
+
+      <motion.aside
+        className={`sidebar md:translate-x-0 md:opacity-100 transition-transform ${showMobileSidebar ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: showSidebar ? 1 : 0, x: showSidebar ? 0 : -20 }}
         transition={{ duration: 0.3 }}
@@ -438,10 +458,12 @@ function App() {
                   setSparkleTransition({ from: prevSec, to: 'home' })
                   setShowSparkling(true)
                   setShowSidebar(false)
+                  setShowMobileSidebar(false)
                   setTimeout(() => setShowSparkling(false), SPARKLE_TRANSITION_MS)
                   window.scrollTo({ top: 0, behavior: 'smooth' })
                 } else {
                   document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  setShowMobileSidebar(false)
                 }
 
                 showToast(`切换到${item.label}`, 'info')
