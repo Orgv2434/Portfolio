@@ -67,6 +67,45 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
                 </span>
               ))}
             </div>
+
+            {(details.demoUrl || details.githubUrl || details.documentUrl) && (
+              <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-white/10">
+                {details.demoUrl && (
+                  <a
+                    href={details.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-5 py-2 rounded-full font-medium text-white hover:opacity-80 transition-opacity text-sm"
+                    style={{ background: `linear-gradient(135deg, ${colors[0]}, ${colors[1]})` }}
+                  >
+                    <ExternalLink size={15} />
+                    在线演示
+                  </a>
+                )}
+                {details.githubUrl && (
+                  <a
+                    href={details.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-5 py-2 rounded-full font-medium bg-white/10 text-white hover:bg-white/20 transition text-sm border border-white/20"
+                  >
+                    <GithubIcon size={15} />
+                    GitHub
+                  </a>
+                )}
+                {details.documentUrl && (
+                  <a
+                    href={details.documentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-5 py-2 rounded-full font-medium text-cyan-400 hover:text-cyan-300 transition text-sm border border-cyan-400/40 hover:border-cyan-300/60"
+                  >
+                    <BookOpen size={15} />
+                    详细文档
+                  </a>
+                )}
+              </div>
+            )}
           </motion.div>
         </div>
       </motion.section>
@@ -336,44 +375,38 @@ export const ProjectInfo = ({ title, description, category, tags, emoji, colors,
             </h3>
             <div className="flex flex-wrap gap-4 justify-center">
               {details.demoUrl && (
-                <motion.a
+                <a
                   href={details.demoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 rounded-full font-medium text-white"
+                  className="flex items-center gap-2 px-6 py-3 rounded-full font-medium text-white hover:opacity-80 transition-opacity"
                   style={{ background: `linear-gradient(135deg, ${colors[0]}, ${colors[1]})` }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <ExternalLink size={18} />
                   在线演示
-                </motion.a>
+                </a>
               )}
               {details.githubUrl && (
-                <motion.a
+                <a
                   href={details.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-6 py-3 rounded-full font-medium bg-white/10 text-white hover:bg-white/20 transition border border-white/20"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <GithubIcon size={18} />
                   GitHub
-                </motion.a>
+                </a>
               )}
               {details.documentUrl && (
-                <motion.a
+                <a
                   href={details.documentUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-6 py-3 rounded-full font-medium text-cyan-400 hover:text-cyan-300 transition border border-cyan-400/30 hover:border-cyan-300/50"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <BookOpen size={18} />
                   详细文档
-                </motion.a>
+                </a>
               )}
             </div>
           </div>
