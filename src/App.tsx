@@ -499,9 +499,7 @@ function App() {
             <div className="glass rounded-3xl p-8 mb-8 backdrop-blur-md">
               <h3 className="text-xl font-bold mb-6 text-white/90">关于我</h3>
               <p className="text-white/80 leading-relaxed text-lg">
-                我是一名游戏专业学生，具备策划、技术、TA 的全面能力。
-                求职意向优先级：技术策划 → UE 客户端程序 → Unity 客户端程序。
-                拥有多个完整项目经验，从策划到技术实现全流程参与。
+                {data.profile.intro}
               </p>
             </div>
 
@@ -520,26 +518,14 @@ function App() {
               <h3 className="text-xl font-bold mb-6 text-white/90">个人信息</h3>
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                  <p className="text-white/80 leading-relaxed">
-                    姓名：Nanako
-                  </p>
-                  <p className="text-white/80 leading-relaxed mt-2">
-                    专业：游戏设计与开发
-                  </p>
-                  <p className="text-white/80 leading-relaxed mt-2">
-                    学历：本科
-                  </p>
+                  <p className="text-white/80 leading-relaxed">姓名：{data.profile.name}</p>
+                  <p className="text-white/80 leading-relaxed mt-2">专业：{data.profile.major}</p>
+                  <p className="text-white/80 leading-relaxed mt-2">学历：{data.profile.education}</p>
                 </div>
                 <div>
-                  <p className="text-white/80 leading-relaxed">
-                    邮箱：nanako@example.com
-                  </p>
-                  <p className="text-white/80 leading-relaxed mt-2">
-                    电话：123-4567-8900
-                  </p>
-                  <p className="text-white/80 leading-relaxed mt-2">
-                    所在地：北京
-                  </p>
+                  <p className="text-white/80 leading-relaxed">邮箱：{data.profile.email}</p>
+                  <p className="text-white/80 leading-relaxed mt-2">电话：{data.profile.phone}</p>
+                  <p className="text-white/80 leading-relaxed mt-2">所在地：{data.profile.location}</p>
                 </div>
               </div>
             </div>
