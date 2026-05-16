@@ -21,7 +21,7 @@ import { ScrollHint } from './components/ScrollHint'
 import { BentoCard } from './components/BentoCard'
 import { SkeletonCard } from './components/SkeletonCard'
 import { SkillGrid } from './components/SkillGrid'
-import { SECTION_PALETTES, type SectionType } from './sectionPalettes'
+import { SECTION_PALETTES, SECTION_IDS, type SectionType } from './sectionPalettes'
 import type { Project } from './types'
 
 interface Toast {
@@ -109,13 +109,10 @@ function App() {
             window.scrollTo(0, targetY)
             requestAnimationFrame(() => {
               window.scrollTo(0, targetY)
+              // 最后一帧渲染后解锁，精确时序替代固定 600ms
+              isReturningRef.current = false
             })
           })
-
-          // 固定延时后解除锁定
-          setTimeout(() => {
-            isReturningRef.current = false
-          }, 600)
         })
       })
     }
@@ -246,6 +243,22 @@ function App() {
       infoEnterTransitionLockRef.current = false
     }
   }, [])
+
+  // 键盘导航：方向键切换区块
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedProject) return
+      const sections = [...SECTION_IDS] as SectionType[]
+      const currentIdx = sections.indexOf(activeSection)
+      if (e.key === 'ArrowDown' && currentIdx < sections.length - 1) {
+        document.getElementById(sections[currentIdx + 1])?.scrollIntoView({ behavior: 'smooth' })
+      } else if (e.key === 'ArrowUp' && currentIdx > 0) {
+        document.getElementById(sections[currentIdx - 1])?.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [activeSection, selectedProject])
 
   const getCurrentSectionName = useCallback(() => {
     const names: Record<SectionType, string> = {

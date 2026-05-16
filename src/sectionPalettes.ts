@@ -68,7 +68,10 @@ export function rgbToHsl(r: number, g: number, b: number): { h: number; s: numbe
 }
 
 export function getTargetPaletteFromScroll(scrollY: number): string[] {
-  const tops = SECTION_IDS.map((id) => document.getElementById(id)?.offsetTop ?? 0)
+  const rawTops = SECTION_IDS.map((id) => document.getElementById(id)?.offsetTop ?? null)
+  // 任何 section 不存在时降级返回 home 调色板，避免颜色插值定位错误
+  if (rawTops.some((t) => t === null)) return [...SECTION_PALETTES.home]
+  const tops = rawTops as number[]
   const last = SECTION_IDS.length - 1
 
   if (tops[last] <= tops[0]) return [...SECTION_PALETTES.home]
