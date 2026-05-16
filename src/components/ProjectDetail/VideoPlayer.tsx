@@ -23,10 +23,14 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const controlTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowControls(false), 3000);
-    return () => clearTimeout(timer);
+    if (controlTimerRef.current) clearTimeout(controlTimerRef.current);
+    controlTimerRef.current = setTimeout(() => setShowControls(false), 3000);
+    return () => {
+      if (controlTimerRef.current) clearTimeout(controlTimerRef.current);
+    };
   }, [isPlaying]);
 
   useEffect(() => {
@@ -56,8 +60,8 @@ export const VideoPlayer = ({ videoPath, colors, title }: VideoPlayerProps) => {
 
   const handleMouseMove = () => {
     setShowControls(true);
-    clearTimeout((window as unknown as { videoControlTimer?: number }).videoControlTimer);
-    (window as unknown as { videoControlTimer?: number }).videoControlTimer = setTimeout(() => setShowControls(false), 3000);
+    if (controlTimerRef.current) clearTimeout(controlTimerRef.current);
+    controlTimerRef.current = setTimeout(() => setShowControls(false), 3000);
   };
 
   const togglePlay = () => {
